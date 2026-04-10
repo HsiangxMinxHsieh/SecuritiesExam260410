@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk  rootProject.ext.sdk_versions.compileSdk
+    compileSdk rootProject.ext.sdk_versions.compileSdk
 
     defaultConfig {
         applicationId "com.timmy.securitiesexam"
-        minSdk  rootProject.ext.sdk_versions.minSdk
-        targetSdk  rootProject.ext.sdk_versions.targetSdk
+        minSdk rootProject.ext.sdk_versions.minSdk
+        targetSdk rootProject.ext.sdk_versions.targetSdk
         versionCode 1
         versionName "1.0"
 
@@ -20,7 +20,7 @@ android {
         multiDexEnabled true
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64", "mips"
         }
     }
 
