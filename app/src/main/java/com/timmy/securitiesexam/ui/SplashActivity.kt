@@ -3,16 +3,19 @@ package com.timmy.securitiesexam.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import com.timmy.base.cons.ResultConst
+import androidx.lifecycle.repeatOnLifecycle
+import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.databinding.ActivitySplashBinding
 import com.timmy.securitiesexam.viewmodel.DataViewModel
+import com.timmy.securitiesexam.viewmodel.SplashStage
+import com.timmy.securitiesexam.viewmodel.SplashUiState
 import com.timmymike.componenttool.BaseActivity
-import com.timmymike.componenttool.BaseToolBarActivity
+import com.timmymike.logtool.forJsonAndLoge
 import com.timmymike.logtool.loge
-import com.timmymike.timetool.TimeUnits
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -21,67 +24,103 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
-    private val splashDelay = 3 * TimeUnits.oneSec // 固定至少等待三秒
+    private val viewModel: DataViewModel by viewModels()
 
-    private val totalWaitCount = 2 // 預期完成的條件數（含等待 splashDelay 計時）
-    // 1. 等待 splashDelay 秒
-
-    private var isCompleted = 0
-
-    private val dataViewModel: DataViewModel by viewModels()
+    private var splashJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        initSDK()
+        loge("splash 初始化")
 
         initView()
-
+        initObserver()
         initData()
-
-        initObservable()
+        startSplashTimer()
     }
 
-    private fun initSDK() {
+    private fun initView() = binding.run {
+        supportActionBar?.hide()
+        pgDownload.progress = 0
     }
 
-    private fun initObservable() = dataViewModel.run {
-        binding.pgDownload.isVisible = true
+    private fun initData() {
+        viewModel.getData()
+    }
+
+    /**
+     * Splash Timer（避免 loading 卡死）
+     */
+    private fun startSplashTimer() {
+        splashJob?.cancel()
+
+        splashJob = lifecycleScope.launch {
+            delay(SPLASH_MIN_DURATION)
+            viewModel.onSplashTimerFinished()
+            handleNavigation()
+        }
+    }
+
+    /**
+     * Observe ViewModel State
+     */
+    private fun initObserver() {
         lifecycleScope.launch {
-            progress.collect { progress ->
-                binding.pgDownload.progress = (progress.progress * 1000).toInt()
-                loge("當前進度=>${progress},,,狀態判斷結果是=>${progress.stage == ResultConst.Complete}")
-                if (progress.stage == ResultConst.Complete) {
-                    stepSuccess()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                viewModel.uiState.collect { state ->
+                    state.forJsonAndLoge("當前進度=>")
+
+                    renderProgress(state)
+
+                    handleStage(state.stage)
+
+                    handleNavigation()
                 }
             }
         }
     }
 
-    private fun initView() = binding.run {
-        supportActionBar?.hide() // 不使用原生的Title。
+    /**
+     * UI render only
+     */
+    private fun renderProgress(state: SplashUiState) {
+        binding.pgDownload.progress =
+            (state.progress.coerceIn(0f, 1f) * 1000).toInt()
     }
 
-    private fun initData() {
-        dataViewModel.getData()
+    /**
+     * Handle business stage UI hint
+     */
+    private fun handleStage(stage: SplashStage) {
+        when (stage) {
+            SplashStage.DBWriting -> {
+                binding.tvDownloadSubTitle.text =
+                    getString(R.string.splash_writing)
+            }
 
-        // 啟動延遲計時(避免等待太久)
-        lifecycleScope.launch {
-            delay(splashDelay)
-            stepSuccess()
+            else -> Unit
         }
     }
 
-    private fun stepSuccess() {
-        isCompleted++
-        if (isCompleted >= totalWaitCount) {
+    /**
+     * Navigation decision centralized
+     */
+    private fun handleNavigation() {
+        if (viewModel.uiState.value.canNavigate) {
             startMainActivity()
         }
     }
 
     private fun startMainActivity() {
+        splashJob?.cancel()
+
+        loge("splash 即將跳頁")
+
         gotoActivity(MainActivity::class.java, closeSelf = true)
     }
 
+    companion object {
+        private const val SPLASH_MIN_DURATION = 3_000L
+    }
 }

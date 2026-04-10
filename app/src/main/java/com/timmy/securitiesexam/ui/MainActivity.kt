@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
-import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.databinding.ActivityMainBinding
 import com.timmy.securitiesexam.viewmodel.DataViewModel
 import com.timmy.securitiesexam.viewmodel.PageViewModel
@@ -69,10 +68,10 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
 //        logWtf("即將switchTo ${fragment},此時的needReplace是=>${needReplace}")
         val transaction = supportFragmentManager.beginTransaction()
         if (needReplace) {
-            transaction.replace(R.id.container_content, fragment, fragment.javaClass.name).commit()
+            transaction.replace(binding.containerContent.id, fragment, fragment.javaClass.name).commit()
         } else {
             // 隱藏當前 Fragment
-            supportFragmentManager.findFragmentById(R.id.container_content)?.let {
+            supportFragmentManager.findFragmentById(binding.containerContent.id)?.let {
                 if (judgeIsNeedHideFragment(it)) transaction.hide(it) else transaction.remove(it)
             }
 
@@ -81,7 +80,7 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
                 transaction.show(it)
             } ?: run {
                 // 新增 Fragment
-                transaction.add(R.id.container_content, fragment, fragment.javaClass.name)
+                transaction.add(binding.containerContent.id, fragment, fragment.javaClass.name)
             }
             transaction.commitAllowingStateLoss()
         }
@@ -96,7 +95,7 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     private fun removeFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         // 移除傳入的 Fragment
-        supportFragmentManager.findFragmentById(R.id.container_content)?.let {
+        supportFragmentManager.findFragmentById(binding.containerContent.id)?.let {
             transaction.remove(fragment)
         }
 

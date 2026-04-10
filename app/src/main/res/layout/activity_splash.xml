@@ -6,10 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background"
     tools:context=".ui.SplashActivity">
-
-
+    
     <ImageView
-        android:id="@+id/iv_logo"
+        android:id="@+id/ivLogo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_launcher_foreground"
@@ -22,7 +21,7 @@
         app:layout_constraintVertical_bias="0.4" />
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/splash_memes"
@@ -30,10 +29,10 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_download"
+        android:id="@+id/clDownload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/tran_black"
@@ -44,7 +43,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ProgressBar
-            android:id="@+id/pg_download"
+            android:id="@+id/pgDownload"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -60,12 +59,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/tvDownloadSubTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/splash_downloading"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/pg_download" />
+            app:layout_constraintTop_toBottomOf="@+id/pgDownload" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
