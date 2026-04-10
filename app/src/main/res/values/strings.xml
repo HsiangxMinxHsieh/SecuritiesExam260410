@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SecuritiesExam</string>
+
+    <integer name="anim_duration">500</integer>
+    <string name="back">←Back</string>
+
+    <!-- Splash -->
+    <string name="splash_memes">基礎專案─您的新專案好幫手</string>
+    <string name="splash_downloading">更新資料下載中…</string>
+
+</resources>

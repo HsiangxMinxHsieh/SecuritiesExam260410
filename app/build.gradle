@@ -1,0 +1,80 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk  rootProject.ext.sdk_versions.compileSdk
+
+    defaultConfig {
+        applicationId "com.timmy.securitiesexam"
+        minSdk  rootProject.ext.sdk_versions.minSdk
+        targetSdk  rootProject.ext.sdk_versions.targetSdk
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+    }
+
+    buildTypes {
+        release {
+            // 以下為 ProGuard／R8 壓縮與混淆
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    viewBinding.enable = true
+    namespace 'com.timmy.securitiesexam'
+
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.9.0' // 2023/04/07：當時 1.9.0 為穩定版
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    implementation "androidx.activity:activity-ktx:1.5.1"
+    implementation "androidx.fragment:fragment-ktx:1.5.1"
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    kapt 'com.github.bumptech.glide:compiler:4.14.2'
+
+
+    // 取得資料Libs
+    implementation project(':AssetsLibs')
+    implementation project(":GetNetAPILibs")
+    implementation project(':DatastoreLibs')
+    implementation project(':RoomLibs')
+    implementation project(':Base')
+
+}
+
+

@@ -1,0 +1,21 @@
+buildscript {
+    ext {
+        hilt_version = '2.50'  // 更新至當時穩定版
+        room_version = '2.6.1'  // 更新至當時穩定版
+        // 全域變數
+        sdk_versions = [
+                compileSdk : 36,
+                minSdk     : 24,
+                targetSdk  : 36
+        ]
+    }
+    dependencies {
+//        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.42'
+    }
+}
+plugins {
+    id 'com.android.application' version '8.10.1' apply false
+    id 'com.android.library' version '8.10.1' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
+    id 'com.google.dagger.hilt.android' version '2.50' apply false
+}

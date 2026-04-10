@@ -1,0 +1,55 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'com.timmy.base'
+    compileSdk  rootProject.ext.sdk_versions.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.ext.sdk_versions.minSdk
+        targetSdk  rootProject.ext.sdk_versions.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+dependencies {
+
+    //hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    kapt 'androidx.hilt:hilt-compiler:1.1.0'
+
+    // ※timmymike tool
+    api 'com.github.timmymike:LogTool:1.2.3'
+    api 'com.github.timmymike:ComponentTool:1.3.6'
+    api 'com.github.timmymike:ViewTool:1.4.7'
+    api 'com.github.timmymike:TimeTool:1.0.2'
+
+    //Retrofit
+    api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
+    api 'com.squareup.retrofit2:retrofit:2.9.0'
+    api 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+}
