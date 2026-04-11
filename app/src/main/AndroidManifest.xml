@@ -34,11 +34,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--預設於機器人啟動後，在機器人上執行-->
-            <!--            <intent-filter>-->
-            <!--                <action android:name="action.orionstar.default.app" />-->
-            <!--                <category android:name="android.intent.category.DEFAULT" />-->
-            <!--            </intent-filter>-->
         </activity>
     </application>
 

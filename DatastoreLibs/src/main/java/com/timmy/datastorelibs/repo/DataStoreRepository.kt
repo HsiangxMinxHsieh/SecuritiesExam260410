@@ -11,13 +11,9 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.timmy.base.data.response.BBUData
-import com.timmymike.logtool.toDataBean
-import com.timmymike.logtool.toJson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
@@ -62,22 +58,21 @@ class DataStoreRepository @Inject constructor(context: Application) {
 
         val sampleStringKey = stringPreferencesKey("user_info_response_Key")
         val sampleDataKey = stringPreferencesKey("Sample_Data_Response_Key")
-        val sampleLongKey = longPreferencesKey("Sample_Long_Key")
+        val getDataIntervalLongKey = longPreferencesKey("GET_DATA_INTERVAL_LONG_KEY")
         val sampleIntKey = intPreferencesKey("Sample_Int_Key")
         val sampleBooleanKey = booleanPreferencesKey("Sample_boolean_Key")
 
     }
 
-    // 已封裝之偏好項目
-
-    var sampleData: BBUData
-        get() = runBlocking {
-            kotlin.runCatching {
-                readData(sampleDataKey).firstOrNull()
-                    ?.toDataBean<BBUData>()
-            }.getOrNull() ?: BBUData()
-        }
-        set(value) = runBlocking { saveData(sampleDataKey, value.toJson()) }
+    // 已封裝之項目
+//    var sampleData: BBUData
+//        get() = runBlocking {
+//            kotlin.runCatching {
+//                readData(sampleDataKey).firstOrNull()
+//                    ?.toDataBean<BBUData>()
+//            }.getOrNull() ?: BBUData()
+//        }
+//        set(value) = runBlocking { saveData(sampleDataKey, value.toJson()) }
 
     var sampleString: String
         get() = runBlocking { readData(sampleStringKey).first() }
@@ -91,5 +86,8 @@ class DataStoreRepository @Inject constructor(context: Application) {
         get() = runBlocking { readData(sampleIntKey).first() }
         set(value) = runBlocking { saveData(sampleIntKey, value) }
 
+    var getDataInterval: Long
+        get() = runBlocking { readData(getDataIntervalLongKey, 0L).first() }
+        set(value) = runBlocking { saveData(getDataIntervalLongKey, value) }
 
 }

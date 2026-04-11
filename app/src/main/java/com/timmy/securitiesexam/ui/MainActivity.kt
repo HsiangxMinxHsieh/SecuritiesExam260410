@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.timmy.securitiesexam.databinding.ActivityMainBinding
-import com.timmy.securitiesexam.viewmodel.DataViewModel
 import com.timmy.securitiesexam.viewmodel.PageViewModel
 import com.timmymike.componenttool.BaseToolBarActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,7 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
 
-    private val dataViewModel: DataViewModel by viewModels()
     private val pageViewModel: PageViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

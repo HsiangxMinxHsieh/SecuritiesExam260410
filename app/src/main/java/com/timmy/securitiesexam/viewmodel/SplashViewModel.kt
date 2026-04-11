@@ -1,0 +1,174 @@
+package com.timmy.securitiesexam.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.timmy.assetslibs.repo.GetAPIRepository
+import com.timmy.base.baseResponse.ResultState
+import com.timmy.base.data.response.BBUDataItem
+import com.timmy.base.data.response.StockAVGDataItem
+import com.timmy.base.data.response.StockDataItem
+import com.timmy.datastorelibs.repo.DataStoreRepository
+import com.timmy.roomlibs.repo.RoomRepository
+import com.timmymike.logtool.loge
+import com.timmymike.timetool.TimeUnits
+import com.timmymike.timetool.nowTime
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+/**
+ * 處理資料的 ViewModel，主要用於登入與資料讀寫。
+ */
+@HiltViewModel
+class SplashViewModel @Inject constructor(
+    private val roomRepo: RoomRepository,
+    private val apiRepo: GetAPIRepository,
+    private val dsRepo: DataStoreRepository
+) : ViewModel() {
+
+    companion object {
+        private const val API_PROGRESS_WEIGHT = 0.3f
+        private const val DB_PROGRESS_WEIGHT = 0.7f
+        private const val CHUNK_SIZE = 500
+        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 5L
+    }
+
+    private val _uiState = MutableStateFlow(SplashUiState())
+    val uiState = _uiState.asStateFlow()
+
+    // ===== Public API =====
+
+    fun start() {
+        if (!shouldFetchData()) {
+            completeData()
+            return
+        }
+
+        viewModelScope.launch {
+            runCatching {
+                val apiData = fetchAllApiData()
+                insertAllData(apiData)
+            }.onSuccess {
+                completeData()
+            }.onFailure { e ->
+                handleError(e)
+            }
+        }
+    }
+
+    fun onSplashTimerFinished() {
+        _uiState.update { it.copy(timerFinished = true) }
+    }
+
+    // ===== Business Logic =====
+
+    private fun shouldFetchData(): Boolean {
+        return dsRepo.getDataInterval + GET_DATA_INTERVAL < nowTime
+    }
+
+    private suspend fun fetchAllApiData(): Triple<List<BBUDataItem>, List<StockAVGDataItem>, List<StockDataItem>> =
+        coroutineScope {
+            val bbuDeferred = async { apiRepo.getBBUData().getOrThrow() }
+            val avgDeferred = async { apiRepo.getStockAVG().getOrThrow() }
+            val stockDeferred = async { apiRepo.getStock().getOrThrow() }
+
+            updateProgress(API_PROGRESS_WEIGHT)
+
+            Triple(
+                bbuDeferred.await(),
+                avgDeferred.await(),
+                stockDeferred.await()
+            )
+        }
+
+    private suspend fun insertAllData(data: Triple<List<BBUDataItem>, List<StockAVGDataItem>, List<StockDataItem>>) {
+        val (bbu, avg, stock) = data
+
+        val total = bbu.size + avg.size + stock.size
+        var inserted = 0
+
+        suspend fun <T> insertChunked(
+            list: List<T>,
+            insertAction: suspend (List<T>) -> Unit
+        ) {
+            list.chunked(CHUNK_SIZE).forEach { chunk ->
+                withContext(Dispatchers.IO) {
+                    insertAction(chunk)
+                }
+                inserted += chunk.size
+                updateDbProgress(inserted, total)
+            }
+        }
+
+        insertChunked(bbu, roomRepo::insertByBBU)
+        insertChunked(avg, roomRepo::insertByStockAVG)
+        insertChunked(stock, roomRepo::insertByStock)
+    }
+
+    // ===== UI State Handling =====
+
+    private fun updateProgress(progress: Float) {
+        _uiState.update {
+            it.copy(
+                progress = progress,
+                stage = SplashStage.ApiComplete
+            )
+        }
+    }
+
+    private fun updateDbProgress(inserted: Int, total: Int) {
+        val progress = API_PROGRESS_WEIGHT +
+                (inserted.toFloat() / total) * DB_PROGRESS_WEIGHT
+
+        _uiState.update {
+            it.copy(
+                progress = progress,
+                stage = SplashStage.DBWriting
+            )
+        }
+    }
+
+    private fun completeData() {
+        dsRepo.getDataInterval = nowTime
+        _uiState.update { it.copy(dataFinished = true) }
+    }
+
+    private fun handleError(e: Throwable) {
+        loge("Splash getData error", e)
+        _uiState.update {
+            it.copy(
+                stage = SplashStage.Error(e.message ?: "Unknown error")
+            )
+        }
+    }
+}
+
+fun <T> ResultState<T>.getOrThrow(): T =
+    when (this) {
+        is ResultState.Success -> data
+        is ResultState.Error -> throw Exception(message)
+    }
+
+data class SplashUiState(
+    val progress: Float = 0f,
+    val stage: SplashStage = SplashStage.Idle,
+    var timerFinished: Boolean = false,
+    var dataFinished: Boolean = false
+) {
+    val canNavigate: Boolean
+        get() = timerFinished && dataFinished
+}
+
+sealed class SplashStage {
+    object Idle : SplashStage()
+    object DBWriting : SplashStage()
+    object ApiComplete : SplashStage()
+    data class Error(val msg: String) : SplashStage()
+}

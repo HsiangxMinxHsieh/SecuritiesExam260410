@@ -3,17 +3,17 @@ package com.timmy.securitiesexam.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.databinding.ActivitySplashBinding
-import com.timmy.securitiesexam.viewmodel.DataViewModel
 import com.timmy.securitiesexam.viewmodel.SplashStage
 import com.timmy.securitiesexam.viewmodel.SplashUiState
+import com.timmy.securitiesexam.viewmodel.SplashViewModel
 import com.timmymike.componenttool.BaseActivity
-import com.timmymike.logtool.forJsonAndLoge
-import com.timmymike.logtool.loge
+import com.timmymike.logtool.forLoge
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,14 +24,14 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
-    private val viewModel: DataViewModel by viewModels()
+    private val viewModel: SplashViewModel by viewModels()
 
     private var splashJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loge("splash 初始化")
+        "splash 初始化".forLoge("當前進度=>")
 
         initView()
         initObserver()
@@ -45,7 +45,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     }
 
     private fun initData() {
-        viewModel.getData()
+        viewModel.start()
     }
 
     /**
@@ -69,8 +69,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 viewModel.uiState.collect { state ->
-                    state.forJsonAndLoge("當前進度=>")
-
+                    state.forLoge("當前進度=>")
+                    if (state.stage == SplashStage.Idle) {
+                        return@collect
+                    }
                     renderProgress(state)
 
                     handleStage(state.stage)
@@ -85,6 +87,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
      * UI render only
      */
     private fun renderProgress(state: SplashUiState) {
+        binding.clDownload.isVisible = true
         binding.pgDownload.progress =
             (state.progress.coerceIn(0f, 1f) * 1000).toInt()
     }
@@ -94,6 +97,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
      */
     private fun handleStage(stage: SplashStage) {
         when (stage) {
+            SplashStage.ApiComplete -> {
+                binding.tvDownloadSubTitle.text =
+                    getString(R.string.splash_downloading)
+            }
             SplashStage.DBWriting -> {
                 binding.tvDownloadSubTitle.text =
                     getString(R.string.splash_writing)
@@ -115,7 +122,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private fun startMainActivity() {
         splashJob?.cancel()
 
-        loge("splash 即將跳頁")
+        "splash 即將跳頁".forLoge("當前進度=>")
 
         gotoActivity(MainActivity::class.java, closeSelf = true)
     }
