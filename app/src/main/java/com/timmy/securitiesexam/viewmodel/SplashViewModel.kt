@@ -14,6 +14,7 @@ import com.timmymike.timetool.TimeUnits
 import com.timmymike.timetool.nowTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,21 +38,25 @@ class SplashViewModel @Inject constructor(
         private const val API_PROGRESS_WEIGHT = 0.3f
         private const val DB_PROGRESS_WEIGHT = 0.7f
         private const val CHUNK_SIZE = 500
-        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 5L
+        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 1
     }
 
     private val _uiState = MutableStateFlow(SplashUiState())
     val uiState = _uiState.asStateFlow()
 
     // ===== Public API =====
-
+    private var splashJob: Job? = null
     fun start() {
+        if (splashJob?.isActive == true) { // 螢幕轉向時，不重複啟動
+            return
+        }
+
         if (!shouldFetchData()) {
             completeData()
             return
         }
 
-        viewModelScope.launch {
+        splashJob = viewModelScope.launch {
             runCatching {
                 val apiData = fetchAllApiData()
                 insertAllData(apiData)

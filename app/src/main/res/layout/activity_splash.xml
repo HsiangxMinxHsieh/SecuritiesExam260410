@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/splash_memes"
-        android:textColor="@color/white"
+        android:textColor="@color/text_color_main"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/splash_downloading"
-            android:textColor="@color/white"
+            android:textColor="@color/text_color_sub"
             android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/pgDownload" />
     </androidx.constraintlayout.widget.ConstraintLayout>

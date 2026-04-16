@@ -32,11 +32,15 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         super.onCreate(savedInstanceState)
 
         "splash 初始化".forLoge("當前進度=>")
-
+        initViewModel()
         initView()
         initObserver()
         initData()
         startSplashTimer()
+    }
+
+    private fun initViewModel() { // 初始化ViewModel的內容 // 如果已初始化，需要
+
     }
 
     private fun initView() = binding.run {

@@ -18,12 +18,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * DataStore 讀寫封裝，支援同步與非同步存取。
  */
+@Singleton
 class DataStoreRepository @Inject constructor(context: Application) {
-
 
     private val Context._dataStore: DataStore<Preferences> by preferencesDataStore(
         name = DATASTORE_NAME,
