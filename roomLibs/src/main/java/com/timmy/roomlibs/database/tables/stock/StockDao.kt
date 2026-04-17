@@ -1,6 +1,11 @@
 package com.timmy.roomlibs.database.tables.stock
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import androidx.room.Upsert
 import com.timmy.base.data.response.BBUDataItem
 import com.timmy.base.data.response.StockAVGDataItem
 import com.timmy.base.data.response.StockDataItem
@@ -17,8 +22,11 @@ interface StockDao {
     @get:Query("SELECT * FROM StockEntity ORDER BY code ASC")
     val stockDataAsc: List<StockEntity>
 
-    @get:Query("SELECT * FROM StockEntity ORDER BY code DESC")
-    val stockDataDesc: List<StockEntity>
+    @Query("SELECT * FROM StockEntity ORDER BY code DESC")
+    suspend fun getStockDataDesc(): List<StockEntity>
+
+    @Query("SELECT COUNT(*) FROM StockEntity")
+    suspend fun getCount(): Int
 
     @Upsert
     suspend fun upsertAll(list: List<StockEntity>)
@@ -50,6 +58,7 @@ suspend fun StockDao.insertByBBU(bbuData: List<BBUDataItem>) {
     }
     upsertAll(list)
 }
+
 /**
  * 處理 StockAVGData (收盤價、月平均價)
  */

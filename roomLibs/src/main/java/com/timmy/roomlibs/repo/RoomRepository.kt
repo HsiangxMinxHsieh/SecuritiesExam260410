@@ -1,18 +1,12 @@
 package com.timmy.roomlibs.repo
 
-import androidx.room.Transaction
-import com.timmy.base.data.response.BBUData
 import com.timmy.base.data.response.BBUDataItem
-import com.timmy.base.data.response.StockAVGData
 import com.timmy.base.data.response.StockAVGDataItem
-import com.timmy.base.data.response.StockData
 import com.timmy.base.data.response.StockDataItem
 import com.timmy.roomlibs.database.tables.stock.StockDao
-import com.timmy.roomlibs.database.tables.stock.StockEntity
 import com.timmy.roomlibs.database.tables.stock.insertByBBU
 import com.timmy.roomlibs.database.tables.stock.insertByStock
 import com.timmy.roomlibs.database.tables.stock.insertByStockAVG
-import com.timmymike.logtool.loge
 import javax.inject.Inject
 
 /**
@@ -23,6 +17,11 @@ import javax.inject.Inject
 class RoomRepository @Inject constructor(
     private val stockDao: StockDao
 ) {
+    suspend fun getCount() = stockDao.getCount()
+
+    suspend fun getDataDesc() = stockDao.getStockDataDesc()
+
+    suspend fun getDataAsc() = stockDao.stockDataAsc
 
     suspend fun insertByBBU(bbuData: List<BBUDataItem>) {
         stockDao.insertByBBU(bbuData)

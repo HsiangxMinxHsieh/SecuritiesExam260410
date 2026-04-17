@@ -38,7 +38,7 @@ class SplashViewModel @Inject constructor(
         private const val API_PROGRESS_WEIGHT = 0.3f
         private const val DB_PROGRESS_WEIGHT = 0.7f
         private const val CHUNK_SIZE = 500
-        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 1
+        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 10
     }
 
     private val _uiState = MutableStateFlow(SplashUiState())
@@ -61,6 +61,8 @@ class SplashViewModel @Inject constructor(
                 val apiData = fetchAllApiData()
                 insertAllData(apiData)
             }.onSuccess {
+                //寫入完畢才要更新現在時間。
+                dsRepo.getDataInterval = nowTime
                 completeData()
             }.onFailure { e ->
                 handleError(e)
@@ -84,7 +86,7 @@ class SplashViewModel @Inject constructor(
             val avgDeferred = async { apiRepo.getStockAVG().getOrThrow() }
             val stockDeferred = async { apiRepo.getStock().getOrThrow() }
 
-            updateProgress(API_PROGRESS_WEIGHT)
+            updateProgress()
 
             Triple(
                 bbuDeferred.await(),
@@ -119,10 +121,10 @@ class SplashViewModel @Inject constructor(
 
     // ===== UI State Handling =====
 
-    private fun updateProgress(progress: Float) {
+    private fun updateProgress() {
         _uiState.update {
             it.copy(
-                progress = progress,
+                progress = API_PROGRESS_WEIGHT,
                 stage = SplashStage.ApiComplete
             )
         }
@@ -141,7 +143,6 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun completeData() {
-        dsRepo.getDataInterval = nowTime
         _uiState.update { it.copy(dataFinished = true) }
     }
 
