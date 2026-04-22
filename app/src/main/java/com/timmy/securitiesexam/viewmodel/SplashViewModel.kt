@@ -8,7 +8,9 @@ import com.timmy.base.data.response.BBUDataItem
 import com.timmy.base.data.response.StockAVGDataItem
 import com.timmy.base.data.response.StockDataItem
 import com.timmy.datastorelibs.repo.DataStoreRepository
+import com.timmy.roomlibs.database.tables.stock.StockEntity
 import com.timmy.roomlibs.repo.RoomRepository
+import com.timmy.securitiesexam.data.StockMergeModel
 import com.timmymike.logtool.loge
 import com.timmymike.timetool.TimeUnits
 import com.timmymike.timetool.nowTime
@@ -94,29 +96,83 @@ class SplashViewModel @Inject constructor(
                 stockDeferred.await()
             )
         }
+    private fun mergeData(
+        bbu: List<BBUDataItem>,
+        avg: List<StockAVGDataItem>,
+        stock: List<StockDataItem>
+    ): List<StockEntity> {
 
+        val map = mutableMapOf<String, StockMergeModel>()
+
+        fun getOrCreate(code: String): StockMergeModel {
+            return map.getOrPut(code) { StockMergeModel(code) }
+        }
+
+        // BBU
+        bbu.forEach {
+            val item = getOrCreate(it.code.toString())
+            item.name = it.name.toString()
+            item.dividendYield = it.dividendYield.toString()
+            item.pBratio = it.pBratio.toString()
+            item.pEratio = it.pEratio.toString()
+        }
+
+        // AVG
+        avg.forEach {
+            val item = getOrCreate(it.code.toString())
+            item.name = it.name.toString()
+            item.closingPrice = it.closingPrice.toString()
+            item.monthlyAveragePrice = it.monthlyAveragePrice.toString()
+        }
+
+        // STOCK
+        stock.forEach {
+            val item = getOrCreate(it.code.toString())
+            item.name = it.name.toString()
+            item.tradeVolume = it.tradeVolume.toString()
+            item.tradeValue = it.tradeValue.toString()
+            item.openingPrice = it.openingPrice.toString()
+            item.highestPrice = it.highestPrice.toString()
+            item.lowestPrice = it.lowestPrice.toString()
+            item.closingPrice = it.closingPrice.toString()
+            item.change = it.change.toString()
+            item.transaction = it.transaction.toString()
+        }
+
+        return map.values.map {
+            StockEntity(
+                code = it.code,
+                name = it.name,
+                openingPrice = it.openingPrice,
+                highestPrice = it.highestPrice,
+                lowestPrice = it.lowestPrice,
+                closingPrice = it.closingPrice,
+                change = it.change,
+                transactionCount = it.transaction,
+                tradeVolume = it.tradeVolume,
+                tradeValue = it.tradeValue,
+                monthlyAveragePrice = it.monthlyAveragePrice,
+                dividendYield = it.dividendYield,
+                pBratio = it.pBratio,
+                pEratio = it.pEratio
+            )
+        }
+    }
     private suspend fun insertAllData(data: Triple<List<BBUDataItem>, List<StockAVGDataItem>, List<StockDataItem>>) {
         val (bbu, avg, stock) = data
 
-        val total = bbu.size + avg.size + stock.size
+        val merged = mergeData(bbu, avg, stock)
+
+        val total = merged.size
         var inserted = 0
 
-        suspend fun <T> insertChunked(
-            list: List<T>,
-            insertAction: suspend (List<T>) -> Unit
-        ) {
-            list.chunked(CHUNK_SIZE).forEach { chunk ->
-                withContext(Dispatchers.IO) {
-                    insertAction(chunk)
-                }
-                inserted += chunk.size
-                updateDbProgress(inserted, total)
+        merged.chunked(CHUNK_SIZE).forEach { chunk ->
+            withContext(Dispatchers.IO) {
+                roomRepo.upsertAll(chunk)
             }
+            inserted += chunk.size
+            updateDbProgress(inserted, total)
         }
-
-        insertChunked(bbu, roomRepo::insertByBBU)
-        insertChunked(avg, roomRepo::insertByStockAVG)
-        insertChunked(stock, roomRepo::insertByStock)
     }
 
     // ===== UI State Handling =====

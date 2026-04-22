@@ -48,8 +48,11 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
 
     private fun initView() = binding.run {
         rvStockContent.adapter = ViewBindingAdapter.create<ItemStockContentBinding, StockEntity>(ItemStockContentBinding::inflate) {
-            tvStockCode.text = it.code
+            tvStockCode.text = "Code:${it.code}"
             tvStockName.text = it.name
+            tvPBratio.text = it.pBratio.emptyToDash()
+            tvMonthlyAveragePrice.text = it.monthlyAveragePrice.emptyToDash()
+            tvOpeningPrice.text = it.openingPrice.emptyToDash()
         }.apply {
             viewHolderInitialCallback = { it -> // 第一次產生
                 (it.binding.root as? ViewGroup)?.resetLayoutTextSize()
@@ -57,6 +60,8 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
         }
 
     }
+
+    private fun String?.emptyToDash() = this?.takeIf { data -> data.isNotEmpty() } ?: "-"
 
     private fun initEvent() = binding.run {
 

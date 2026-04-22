@@ -2,6 +2,8 @@ package com.timmy.roomlibs.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.timmy.roomlibs.database.UpdateExt.availableMigration
+import com.timmy.roomlibs.database.UpdateExt.databaseVersion
 import com.timmymike.logtool.loge
 
 object UpdateExt {
@@ -51,7 +53,7 @@ object UpdateExt {
      */
 
     val availableMigration = arrayOf<Migration>(/*MIGRATION_1_2, MIGRATION_2_3,  MIGRATION_3_4, MIGRATION_4_5*/)
-    const val databaseVersion = 1
+    const val databaseVersion = 3
 
     /**
      * 新增資料表步驟：

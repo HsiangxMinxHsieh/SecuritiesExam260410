@@ -24,4 +24,31 @@
         app:layout_constraintTop_toBottomOf="@+id/tvStockCode"
         tools:ignore="HardcodedText" />
 
+    <TextView
+        android:id="@+id/tvPBratio"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="(股價淨值比)"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStockName" />
+
+    <TextView
+        android:id="@+id/tvMonthlyAveragePrice"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="(月平均價)"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPBratio" />
+
+    <TextView
+        android:id="@+id/tvOpeningPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="(開盤價)"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMonthlyAveragePrice" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
