@@ -8,6 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="text_color_main">#FF000000</color>
     <color name="text_color_sub">#FF888888</color>
+    <color name="item_text_color_label">#444444</color>
+    <color name="item_text_color_text">#333333</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background">#FFFFFFFF</color>
     <color name="DarkGray">#a9a9a9</color>
