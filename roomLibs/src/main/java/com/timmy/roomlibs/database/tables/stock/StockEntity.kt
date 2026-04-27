@@ -12,11 +12,16 @@ data class StockEntity(
     val lowestPrice: String = "",            // 最低價 (LowestPrice)
     val closingPrice: String = "",           // 收盤價 (ClosingPrice)
     val change: String = "",                 // 漲跌價差 (Change)
-    val transactionCount: String = "",            // 成交筆數 (Transaction)
+    val transactionCount: String = "",       // 成交筆數 (Transaction)
     val tradeVolume: String = "",            // 成交股數 (TradeVolume)
     val tradeValue: String = "",             // 成交金額 (TradeValue)
     val monthlyAveragePrice: String = "",    // 月平均價 (MonthlyAveragePrice)
     val dividendYield: String? = "",         // 殖利率(%)
     val pBratio: String? = "",               // 股價淨值比
-    val pEratio: String? = ""                // 本益比
+    val pEratio: String? = "",               // 本益比
+    // 以下是因為要優化UI效能所使用的，預先填入的顏色值
+    val openingPriceColor: Int = 0,
+    val closingPriceColor: Int = 0,
+    val changeColor: Int = 0,
+
 )

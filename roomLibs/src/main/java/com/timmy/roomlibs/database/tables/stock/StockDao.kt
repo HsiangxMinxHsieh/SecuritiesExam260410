@@ -14,11 +14,11 @@ import androidx.room.Upsert
 @Dao
 interface StockDao {
 
-    @get:Query("SELECT * FROM StockEntity ORDER BY code ASC")
-    val stockDataAsc: List<StockEntity>
+    @Query("SELECT * FROM StockEntity ORDER BY code Asc LIMIT :limit OFFSET :offset")
+    suspend fun getStockDataAsc(limit: Int, offset: Int): List<StockEntity>
 
-    @Query("SELECT * FROM StockEntity ORDER BY code DESC")
-    suspend fun getStockDataDesc(): List<StockEntity>
+    @Query("SELECT * FROM StockEntity ORDER BY code DESC LIMIT :limit OFFSET :offset ")
+    suspend fun getStockDataDesc(limit: Int, offset: Int): List<StockEntity>
 
     @Query("SELECT COUNT(*) FROM StockEntity")
     suspend fun getCount(): Int

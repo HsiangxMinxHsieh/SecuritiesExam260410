@@ -10,7 +10,7 @@ class App : Application() {
     }
 
     companion object {
-        private lateinit var instance: App
+        internal lateinit var instance: App
     }
 
 }

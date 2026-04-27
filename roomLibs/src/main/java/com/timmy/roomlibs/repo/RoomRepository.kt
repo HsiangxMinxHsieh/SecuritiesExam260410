@@ -12,10 +12,15 @@ import javax.inject.Inject
 class RoomRepository @Inject constructor(
     private val stockDao: StockDao
 ) {
+    companion object {
+        private const val LIMIT = 100
+    }
 
-    suspend fun getDataDesc() = stockDao.getStockDataDesc()
+    suspend fun getCount() = stockDao.getCount()
 
-    suspend fun getDataAsc() = stockDao.stockDataAsc
+    suspend fun getDataDesc(offset: Int) = stockDao.getStockDataDesc(LIMIT, offset = offset)
+
+    suspend fun getDataAsc(offset: Int) = stockDao.getStockDataAsc(LIMIT, offset = offset)
 
     suspend fun upsertAll(list: List<StockEntity>) {
         stockDao.upsertAll(list)

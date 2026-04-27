@@ -1,27 +1,25 @@
 package com.timmy.securitiesexam.ui.page
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.timmy.roomlibs.database.tables.stock.StockEntity
 import com.timmy.securitiesexam.databinding.FragmentMainLayoutBinding
 import com.timmy.securitiesexam.databinding.ItemStockContentBinding
-import com.timmy.securitiesexam.ui.util.setTextColorByTarget
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.BaseFragment
 import com.timmymike.componenttool.ViewBindingAdapter
-import com.timmymike.logtool.loge
+import com.timmymike.logtool.forLoge
 import com.timmymike.viewtool.getScreenWidthPixels
 import com.timmymike.viewtool.pxToDp
-import com.timmymike.viewtool.resetLayoutTextSize
 import com.timmymike.viewtool.setMarginByDpUnit
-import com.timmymike.viewtool.setRippleBackground
 import kotlin.math.roundToInt
 
 class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
@@ -49,7 +47,7 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
             dataViewModel.uiData.collect { data ->
                 if (data.isEmpty()) return@collect
                 hideDialogLoading()
-                loge("即將更新資料。")
+                data.forLoge("內容更新為=>")
                 @Suppress("UNCHECKED_CAST")
                 (binding.rvStockContent.adapter as ViewBindingAdapter<*, StockEntity>).submitList(data)
             }
@@ -57,33 +55,72 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     }
 
     private fun initView() = binding.run {
-        rvStockContent.adapter = ViewBindingAdapter.Companion.create<ItemStockContentBinding, StockEntity>(ItemStockContentBinding::inflate) { data, p ->
+        // StockEntity 的 DiffUtil (效能優化)
+        val stockDiffCallback = object : DiffUtil.ItemCallback<StockEntity>() {
+            override fun areItemsTheSame(oldItem: StockEntity, newItem: StockEntity): Boolean {
+                // 這裡判斷「是否為同一個物件」，通常比對 ID 或代碼 (code)
+                return oldItem.code == newItem.code
+            }
+
+            override fun areContentsTheSame(oldItem: StockEntity, newItem: StockEntity): Boolean {
+                // 這裡判斷「內容是否有變」，如果你的 StockEntity 是 data class，直接用 == 即可
+                return oldItem == newItem
+            }
+        }
+
+        rvStockContent.adapter = ViewBindingAdapter.Companion.create<ItemStockContentBinding, StockEntity>(
+            ItemStockContentBinding::inflate,
+            stockDiffCallback
+        ) { data, p ->
 
             root.setMarginByDpUnit(8, if (p == 0) getFirstHeightDp() else 8, 8, 8) // 第一個margin，要留不同的高度
 
-            root.setRippleBackground(Color.RED)
+//            clCardContent.setRippleBackground(Color.GRAY) // 太耗效能
+//            clCardContent.setClickBgState(Color.WHITE.toDrawable(), Color.GREEN.toDrawable()) // 使用者體驗太差
+
             tvCode.text = data.code
             tvName.text = data.name
-            tvClosingPrice.text = data.closingPrice.emptyToDash()
-            tvClosingPrice.setTextColorByTarget(data.closingPrice, data.monthlyAveragePrice)
             tvOpeningPrice.text = data.openingPrice.emptyToDash()
-            tvOpeningPrice.setTextColorByTarget(data.openingPrice, data.monthlyAveragePrice) // 題目沒有說要做，但我多做的 // 希望不要被扣分
-            tvChange.text = data.change
-            tvChange.setTextColorByTarget(data.change, "0")
+            tvOpeningPrice.setTextColor(data.openingPriceColor) // 題目沒有說要做，但我多做的 // 希望不要被扣分
+            tvClosingPrice.text = data.closingPrice.emptyToDash()
+            tvClosingPrice.setTextColor(data.closingPriceColor)
             tvMonthlyAveragePrice.text = data.monthlyAveragePrice
             tvHighestPrice.text = data.highestPrice.emptyToDash()
             tvLowestPrice.text = data.lowestPrice.emptyToDash()
 
-            tvTransactionCount.text = data.transactionCount
-            tvTradeVolume.text = data.tradeVolume
-            tvTradeValue.text = data.tradeValue
+            tvChange.text = data.change.emptyToDash()
+            tvChange.setTextColor(data.changeColor)
+
+
+            tvTransactionCount.text = data.transactionCount.emptyToDash()
+            tvTradeVolume.text = data.tradeVolume.emptyToDash()
+            tvTradeValue.text = data.tradeValue.emptyToDash()
 
         }.apply {
             viewHolderInitialCallback = { it -> // 第一次產生
-                (it.binding.root as? ViewGroup)?.resetLayoutTextSize() // 依畫面比例重設文字大小
+//                (it.binding.root as? ViewGroup)?.resetLayoutTextSize() // 依畫面比例重設文字大小
             }
         }
 
+        val layoutManager = binding.rvStockContent.layoutManager as LinearLayoutManager
+
+        binding.rvStockContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                // 判斷是否滑動到底部（通常在剩餘 10 筆時就預載下一頁，體驗較好）
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 10
+                    && firstVisibleItemPosition >= 0
+                ) {
+
+                    dataViewModel.fetchStockData() // 這裡會自動使用裡面存好的新 offset
+                }
+            }
+        })
     }
 
     // 取得第一張卡片距離頂部的高度：

@@ -10,7 +10,6 @@ import com.timmy.securitiesexam.ui.page.MainFragment
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmy.securitiesexam.viewmodel.PageViewModel
 import com.timmymike.componenttool.BaseToolBarActivity
-import com.timmymike.logtool.forLoge
 import com.timmymike.viewtool.click
 import com.timmymike.viewtool.getResourceColor
 import com.timmymike.viewtool.getRoundBgById
@@ -62,9 +61,11 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     }
 
     private fun initEvent() = binding.run {
+        var isClick = false
         ivMenu.click {
-            "收到點擊事件".forLoge("更新資料偵錯→")
-//            dataViewModel.getStockDesc()
+            dataViewModel.resetPagination()
+            dataViewModel.fetchStockData(isClick)
+            isClick = !isClick
         }
     }
 
