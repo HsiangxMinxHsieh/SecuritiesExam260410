@@ -200,19 +200,46 @@
             app:layout_constraintTop_toBottomOf="@+id/lbChange">
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideOne"
+                android:id="@+id/guideOneLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.25" />
+                app:layout_constraintGuide_percent="0.025" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideTwo"
+                android:id="@+id/guideOneText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.6" />
+                app:layout_constraintGuide_percent="0.175" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideTwoLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.28" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideTwoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.43" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideThreeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.63" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideThreeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.78" />
             <TextView
                 android:id="@+id/lblTransactionCount"
                 android:layout_width="wrap_content"
@@ -221,9 +248,8 @@
                 android:textColor="@color/item_text_color_label"
                 android:textSize="@dimen/item_label_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tvTransactionCount"
-                app:layout_constraintEnd_toStartOf="@+id/tvTransactionCount"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/guideOneLabel" />
 
             <TextView
                 android:id="@+id/tvTransactionCount"
@@ -232,8 +258,7 @@
                 android:text="0"
                 android:textColor="@color/item_text_color_text"
                 android:textSize="@dimen/item_bot_text_size"
-                app:layout_constraintEnd_toStartOf="@+id/guideOne"
-                app:layout_constraintStart_toEndOf="@+id/lblTransactionCount"
+                app:layout_constraintStart_toEndOf="@+id/guideOneText"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="(成交筆數)" />
 
@@ -241,13 +266,12 @@
                 android:id="@+id/lblTradeVolume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="成交股數 "
+                android:text="成交股數"
                 android:textColor="@color/item_text_color_label"
                 android:textSize="@dimen/item_label_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tvTradeVolume"
-                app:layout_constraintEnd_toStartOf="@+id/tvTradeVolume"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/guideOne" />
+                app:layout_constraintStart_toEndOf="@+id/guideTwoLabel" />
 
             <TextView
                 android:id="@+id/tvTradeVolume"
@@ -256,8 +280,7 @@
                 android:text="0"
                 android:textColor="@color/item_text_color_text"
                 android:textSize="@dimen/item_bot_text_size"
-                app:layout_constraintEnd_toStartOf="@+id/guideTwo"
-                app:layout_constraintStart_toEndOf="@+id/lblTradeVolume"
+                app:layout_constraintStart_toEndOf="@+id/guideTwoText"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="(成交股數)" />
 
@@ -269,9 +292,8 @@
                 android:textColor="@color/item_text_color_label"
                 android:textSize="@dimen/item_label_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tvTradeValue"
-                app:layout_constraintEnd_toStartOf="@+id/tvTradeValue"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/guideTwo" />
+                app:layout_constraintStart_toEndOf="@+id/guideThreeLabel" />
 
             <TextView
                 android:id="@+id/tvTradeValue"
@@ -280,8 +302,7 @@
                 android:text="0"
                 android:textColor="@color/item_text_color_text"
                 android:textSize="@dimen/item_bot_text_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/lblTradeValue"
+                app:layout_constraintStart_toEndOf="@+id/guideThreeText"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="(成交金額)" />
 
