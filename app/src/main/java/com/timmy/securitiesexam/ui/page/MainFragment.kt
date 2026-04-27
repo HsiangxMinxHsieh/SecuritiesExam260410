@@ -153,8 +153,8 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     private fun String?.formatAsMetric(unit: String = "倍"): String {
         val value = this?.toDoubleOrNull()
         if (value == null || value == 0.0) {
-            // 確保 "-" 的對齊位置與數字部分一致（寬度 6 + 空格）
-            return "-".padStart(6)
+            // 確保 "-" 的對齊位置與小數點的部分一致（寬度 4 ）
+            return "-".padStart(4)
         }
 
         return "%6.2f %s".format(value, unit)
@@ -163,6 +163,7 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     private fun StockEntity.getFormattedAlertMsg(): String {
         return requireContext().getString(
             R.string.card_alert_content,
+            this.name,
             pEratio.formatAsMetric(),
             dividendYield.formatAsMetric("%"),
             pBratio.formatAsMetric()
