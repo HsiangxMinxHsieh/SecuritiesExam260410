@@ -21,7 +21,6 @@ import com.timmy.securitiesexam.databinding.ItemStockContentBinding
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.BaseFragment
 import com.timmymike.componenttool.ViewBindingAdapter
-import com.timmymike.logtool.forLoge
 import com.timmymike.viewtool.clickWithTrigger
 import com.timmymike.viewtool.getScreenWidthPixels
 import com.timmymike.viewtool.pxToDp
@@ -44,7 +43,6 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     }
 
     private fun initData() {
-        showDialogLoading()
         dataViewModel.fetchStockData()
     }
 
@@ -52,8 +50,6 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
         lifecycleScope.launchWhenStarted {
             dataViewModel.uiData.collect { data ->
                 if (data.isEmpty()) return@collect
-                hideDialogLoading()
-                data.forLoge("內容更新為=>")
                 @Suppress("UNCHECKED_CAST")
                 (binding.rvStockContent.adapter as ViewBindingAdapter<*, StockEntity>).submitList(data)
             }
@@ -147,19 +143,10 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
         return windowInsets?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
     }
 
+    // 如果沒有資料的話，顯示「-」（暫定）（未討論）
     private fun String?.emptyToDash() = this?.takeIf { data -> data.isNotEmpty() } ?: "-"
 
     // AlertDialog部分( 點選牌卡跳alert 資訊顯示  本益比、殖利率(%)、股價淨值比)
-    private fun String?.formatAsMetric(unit: String = "倍"): String {
-        val value = this?.toDoubleOrNull()
-        if (value == null || value == 0.0) {
-            // 確保 "-" 的對齊位置與小數點的部分一致（寬度 4 ）
-            return "-".padStart(4)
-        }
-
-        return "%6.2f %s".format(value, unit)
-    }
-
     private fun StockEntity.getFormattedAlertMsg(): String {
         return requireContext().getString(
             R.string.card_alert_content,
@@ -170,6 +157,18 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
         )
     }
 
+    // 格式化文字內容
+    private fun String?.formatAsMetric(unit: String = "倍"): String {
+        val value = this?.toDoubleOrNull()
+        if (value == null || value == 0.0) {
+            // 確保 "-" 的對齊位置與小數點的部分一致（寬度 4 ）
+            return "-".padStart(4)
+        }
+
+        return "%6.2f %s".format(value, unit)
+    }
+
+    // 使用等寬字體，以對齊對話框內的文字
     fun AlertDialog.applyMonospace(): AlertDialog {
         return this.apply { findViewById<TextView>(android.R.id.message)?.typeface = Typeface.MONOSPACE }
     }
