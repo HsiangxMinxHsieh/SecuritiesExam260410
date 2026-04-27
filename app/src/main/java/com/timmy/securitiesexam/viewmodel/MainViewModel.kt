@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.timmy.roomlibs.database.tables.stock.StockEntity
 import com.timmy.roomlibs.repo.RoomRepository
+import com.timmymike.logtool.loge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,7 @@ class MainViewModel @Inject constructor(
 
     fun getStockDesc() {
         viewModelScope.launch(Dispatchers.IO) {
+            loge("即將更新遞減資料")
             _uiData.emit(roomRepo.getDataDesc())
         }
     }

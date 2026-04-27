@@ -43,8 +43,8 @@ dependencies {
 
     // ※timmymike tool
     api 'com.github.timmymike:LogTool:1.2.3'
-    api 'com.github.timmymike:ComponentTool:1.3.6'
-    api 'com.github.timmymike:ViewTool:1.4.7'
+    api 'com.github.timmymike:ComponentTool:1.3.9'
+    api 'com.github.timmymike:ViewTool:1.6.0'
     api 'com.github.timmymike:TimeTool:1.0.3'
 
     //Retrofit
