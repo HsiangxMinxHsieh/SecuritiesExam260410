@@ -38,8 +38,7 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
 
     private fun initData() {
         showDialogLoading()
-        dataViewModel.getStockAsc() // 測試中，要顯示0050的內容，採升序排列
-//        dataViewModel.getStockDesc() // 需求說，預設要顯示降序排列
+        dataViewModel.fetchStockData()
     }
 
     private fun initObservable() {

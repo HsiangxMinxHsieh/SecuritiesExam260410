@@ -23,26 +23,42 @@ class MainViewModel @Inject constructor(
     private val _uiData = MutableStateFlow(listOfNotNull<StockEntity>())
     val uiData = _uiData.asStateFlow()
 
-    // 當前資料位移量
-    private val _dataOffset = MutableStateFlow(0)
-    val dataOffset = _dataOffset.asStateFlow()
+    // 當前資料排序 // true為升序，false為降序
+    private var isAscending: Boolean = false // 預設為降序
 
     private var currentOffset = 0
     private var isLastPage = false
     private var isLoading = false
     private val limit = 100
 
-    fun fetchStockData(isReverse: Boolean = true) {
+    fun switchSequence() {
+        isAscending = !isAscending
+        resetPagination()
+        fetchStockData()
+    }
+
+    fun switchSequenceToAscending() {
+        isAscending = true
+        resetPagination()
+        fetchStockData()
+    }
+
+    fun switchSequenceToDescending() {
+        isAscending = false
+        resetPagination()
+        fetchStockData()
+    }
+
+    fun fetchStockData() {
         if (isLoading || isLastPage) return
 
         viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
-
             // 根據排序需求呼叫 Dao
-            val newData = if (isReverse) {
-                roomRepo.getDataDesc(currentOffset)
-            } else {
+            val newData = if (isAscending) {
                 roomRepo.getDataAsc(currentOffset)
+            } else {
+                roomRepo.getDataDesc(currentOffset)
             }
 
             if (newData.isEmpty()) {
@@ -66,18 +82,6 @@ class MainViewModel @Inject constructor(
         currentOffset = 0
         isLastPage = false
         _uiData.value = emptyList()
-    }
-
-    fun getStockDesc() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiData.emit(roomRepo.getDataDesc(dataOffset.value))
-        }
-    }
-
-    fun getStockAsc() {
-        viewModelScope.launch {
-            _uiData.emit(roomRepo.getDataAsc(dataOffset.value))
-        }
     }
 
 }

@@ -9,7 +9,7 @@
     <color name="rise">#FF0000</color>
     <color name="fall">#4CAF50</color>
     <color name="remain">#808080</color>
-    <color name="data_null">#808080</color>
+    <color name="data_default">#696969</color>
     <color name="text_color_main">#FF000000</color>
     <color name="text_color_sub">#FF888888</color>
     <color name="item_text_color_label">#444444</color>

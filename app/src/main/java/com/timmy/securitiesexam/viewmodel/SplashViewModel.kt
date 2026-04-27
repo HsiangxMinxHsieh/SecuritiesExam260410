@@ -147,7 +147,7 @@ class SplashViewModel @Inject constructor(
         val colorRise = context.getResourceColor(R.color.rise)
         val colorFall = context.getResourceColor(R.color.fall)
         val colorRemain = context.getResourceColor(R.color.remain)
-        val colorDefault = context.getResourceColor(R.color.data_null)
+        val colorDefault = context.getResourceColor(R.color.data_default)
 
         // 定義一個判斷顏色的邏輯函數
         fun getColor(current: String?, target: String?): Int {

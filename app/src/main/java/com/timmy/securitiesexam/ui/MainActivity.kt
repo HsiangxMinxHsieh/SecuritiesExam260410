@@ -61,11 +61,8 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     }
 
     private fun initEvent() = binding.run {
-        var isClick = false
         ivMenu.click {
-            dataViewModel.resetPagination()
-            dataViewModel.fetchStockData(isClick)
-            isClick = !isClick
+            dataViewModel.switchSequence()
         }
     }
 
