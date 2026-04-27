@@ -24,4 +24,10 @@ data class StockEntity(
     val closingPriceColor: Int = 0,
     val changeColor: Int = 0,
 
-)
+    ) {
+    // 處理資料顯示邏輯
+    fun String?.formatEmpty(suffix: String = "%"): String {
+        return if (this.isNullOrEmpty()) "無資料" else "$this$suffix"
+    }
+
+}

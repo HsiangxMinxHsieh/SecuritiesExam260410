@@ -142,14 +142,14 @@ class SplashViewModel @Inject constructor(
             item.change = it.change.toString()
             item.transaction = it.transaction.toString()
         }
-        // 準備顏色資源
+
         val context = App.instance.applicationContext
         val colorRise = context.getResourceColor(R.color.rise)
         val colorFall = context.getResourceColor(R.color.fall)
         val colorRemain = context.getResourceColor(R.color.remain)
         val colorDefault = context.getResourceColor(R.color.data_default)
 
-        // 定義一個判斷顏色的邏輯函數
+        // 內部方法：判斷資料大小與顏色
         fun getColor(current: String?, target: String?): Int {
             val curVal = current?.toDoubleOrNull()
             val tarVal = target?.toDoubleOrNull()
@@ -161,6 +161,7 @@ class SplashViewModel @Inject constructor(
                 else -> colorRemain
             }
         }
+
         return map.values.map {
             StockEntity(
                 code = it.code,
@@ -178,8 +179,8 @@ class SplashViewModel @Inject constructor(
                 pBratio = it.pBratio,
                 pEratio = it.pEratio,
                 openingPriceColor = getColor(it.openingPrice, it.monthlyAveragePrice), // 題目沒有說要做，但我多做的 // 希望不要被扣分
-                closingPriceColor = getColor(it.closingPrice, it.monthlyAveragePrice),
-                changeColor = getColor(it.change, "0")
+                closingPriceColor = getColor(it.closingPrice, it.monthlyAveragePrice), // 收盤價高於月平均價請用紅字,低於請用綠字顯示
+                changeColor = getColor(it.change, "0") // 	漲跌價差 正的請用紅字,負的請用綠字
             )
         }
     }
