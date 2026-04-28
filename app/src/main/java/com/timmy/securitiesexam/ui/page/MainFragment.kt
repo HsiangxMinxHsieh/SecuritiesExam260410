@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.timmy.roomlibs.database.tables.stock.StockEntity
@@ -56,19 +55,9 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     }
 
     private fun initView() = binding.run {
-        val stockDiffCallback = object : DiffUtil.ItemCallback<StockEntity>() {
-            override fun areItemsTheSame(oldItem: StockEntity, newItem: StockEntity): Boolean {
-                return oldItem.code == newItem.code
-            }
-
-            override fun areContentsTheSame(oldItem: StockEntity, newItem: StockEntity): Boolean {
-                return oldItem == newItem
-            }
-        }
 
         rvStockContent.adapter = ViewBindingAdapter.Companion.create<ItemStockContentBinding, StockEntity>(
             ItemStockContentBinding::inflate,
-//            stockDiffCallback
         ) { data, p ->
 
             root.setMarginByDpUnit(8, if (p == 0) getFirstHeightDp() else 8, 8, 8) // 第一個margin，要留不同的高度
@@ -78,17 +67,20 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
 
             tvCode.text = data.code
             tvName.text = data.name
+
             tvOpeningPrice.text = data.openingPrice.emptyToDash()
             tvOpeningPrice.setTextColor(data.openingPriceColor) // 題目沒有說要做，但我多做的 // 希望不要被扣分
+
             tvClosingPrice.text = data.closingPrice.emptyToDash()
             tvClosingPrice.setTextColor(data.closingPriceColor)
+
             tvMonthlyAveragePrice.text = data.monthlyAveragePrice
+
             tvHighestPrice.text = data.highestPrice.emptyToDash()
             tvLowestPrice.text = data.lowestPrice.emptyToDash()
 
             tvChange.text = data.change.emptyToDash()
             tvChange.setTextColor(data.changeColor)
-
 
             tvTransactionCount.text = data.transactionCount.emptyToDash()
             tvTradeVolume.text = data.tradeVolume.emptyToDash()

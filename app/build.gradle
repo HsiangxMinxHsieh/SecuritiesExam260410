@@ -69,7 +69,6 @@ dependencies {
 
 
     // 取得資料Libs
-    implementation project(':AssetsLibs')
     implementation project(":GetNetAPILibs")
     implementation project(':DatastoreLibs')
     implementation project(':RoomLibs')
