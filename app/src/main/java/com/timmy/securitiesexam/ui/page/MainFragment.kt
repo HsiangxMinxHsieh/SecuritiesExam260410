@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
@@ -18,6 +16,7 @@ import com.timmy.roomlibs.database.tables.stock.StockEntity
 import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.databinding.FragmentMainLayoutBinding
 import com.timmy.securitiesexam.databinding.ItemStockContentBinding
+import com.timmy.securitiesexam.ui.util.getStatusBarHeight
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.BaseFragment
 import com.timmymike.componenttool.ViewBindingAdapter
@@ -57,22 +56,19 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     }
 
     private fun initView() = binding.run {
-        // StockEntity 的 DiffUtil (效能優化)
         val stockDiffCallback = object : DiffUtil.ItemCallback<StockEntity>() {
             override fun areItemsTheSame(oldItem: StockEntity, newItem: StockEntity): Boolean {
-                // 這裡判斷「是否為同一個物件」，通常比對 ID 或代碼 (code)
                 return oldItem.code == newItem.code
             }
 
             override fun areContentsTheSame(oldItem: StockEntity, newItem: StockEntity): Boolean {
-                // 這裡判斷「內容是否有變」，如果你的 StockEntity 是 data class，直接用 == 即可
                 return oldItem == newItem
             }
         }
 
         rvStockContent.adapter = ViewBindingAdapter.Companion.create<ItemStockContentBinding, StockEntity>(
             ItemStockContentBinding::inflate,
-            stockDiffCallback
+//            stockDiffCallback
         ) { data, p ->
 
             root.setMarginByDpUnit(8, if (p == 0) getFirstHeightDp() else 8, 8, 8) // 第一個margin，要留不同的高度
@@ -131,17 +127,13 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     // 取得第一張卡片距離頂部的高度：
     @SuppressLint("InternalInsetResource")
     private fun getFirstHeightDp(): Int {
-        val statusBarHeightDp = getStatusBarHeight().pxToDp.roundToInt()
+        val statusBarHeightDp = requireActivity().getStatusBarHeight().pxToDp.roundToInt()
 
         val baseHeightDp = (getScreenWidthPixels() / 10).pxToDp.roundToInt()
 
         return baseHeightDp + statusBarHeightDp + 16 // 16是固定的，每一個卡片之間的距離。
     }
 
-    private fun getStatusBarHeight(): Int {
-        val windowInsets = ViewCompat.getRootWindowInsets(requireActivity().window.decorView)
-        return windowInsets?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
-    }
 
     // 如果沒有資料的話，顯示「-」（暫定）（未討論）
     private fun String?.emptyToDash() = this?.takeIf { data -> data.isNotEmpty() } ?: "-"

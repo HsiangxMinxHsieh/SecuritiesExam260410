@@ -17,6 +17,7 @@ import com.timmymike.componenttool.BaseToolBarActivity
 import com.timmymike.viewtool.click
 import com.timmymike.viewtool.getResourceColor
 import com.timmymike.viewtool.getRoundBgById
+import com.timmymike.viewtool.setMarginByDpUnit
 import com.timmymike.viewtool.setRippleBackground
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,6 +45,7 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     private fun initView() = binding.run {
         setToolbarVisible(false)
         pageViewModel.viewModelSwitchFragment(MainFragment())
+        ivMenu.setMarginByDpUnit(0, 33, 8, 0) // 時間不夠，寫死
         ivMenu.background = (getRoundBgById(5, R.color.background, R.color.icon_stroke, 1))
         ivMenu.setRippleBackground(getResourceColor(R.color.icon_stroke))
     }
@@ -102,7 +104,6 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
 
     @SuppressLint("CommitTransaction")
     fun switchFragment(fragment: Fragment, needReplace: Boolean = false) {
-//        logWtf("即將switchTo ${fragment},此時的needReplace是=>${needReplace}")
         val transaction = supportFragmentManager.beginTransaction()
         if (needReplace) {
             transaction.replace(binding.containerContent.id, fragment, fragment.javaClass.name).commit()

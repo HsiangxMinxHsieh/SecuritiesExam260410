@@ -1,6 +1,7 @@
 package com.timmy.securitiesexam.ui
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -28,6 +29,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private val viewModel: SplashViewModel by viewModels()
 
     private var splashJob: Job? = null
+
+    private var dialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,13 +109,17 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
                 binding.tvDownloadSubTitle.text =
                     getString(R.string.splash_downloading)
             }
+
             SplashStage.DBWriting -> {
                 binding.tvDownloadSubTitle.text =
                     getString(R.string.splash_writing)
             }
+
             is SplashStage.Error -> {
-                showMessageDialog(getResourceString(R.string.get_data_error), {
+                if (dialog != null) return
+                dialog = showMessageDialog(getResourceString(R.string.get_data_error), {
                     viewModel.start()
+                    dialog = null
                 })
             }
 
