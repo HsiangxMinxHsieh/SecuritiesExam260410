@@ -30,7 +30,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * 處理資料的 ViewModel，主要用於登入與資料讀寫。
+ * @author timmy
+ *
+ * [SplashViewModel] 啟動頁面業務邏輯處理中心。
+ *
+ * 主要功能：
+ * 1. 管理啟動生命週期狀態機 (SplashUiState)。
+ * 2. 協調非同步網路請求與資料庫寫入作業。
+ * 3. 計算並回傳下載進度百分比，驅動 UI 進度條更新。
+ * 4. 決策導航權限 (canNavigate)，整合計時器與 API 回傳狀態以觸發跳頁。
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(

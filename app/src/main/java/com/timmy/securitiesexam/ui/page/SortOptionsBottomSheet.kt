@@ -14,6 +14,16 @@ import com.timmymike.viewtool.getResourceColor
 import com.timmymike.viewtool.setRippleBackground
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * @author timmy
+ *
+ * [SortOptionBottomSheet] 針對窄螢幕 (直向模式) 優化的排序選擇器。
+ *
+ * 主要功能：
+ * 1. 互動體驗：實作符合 Material Design 3 規範的底部滑出式選單，便於單手操作。
+ * 2. 狀態連動：當使用者選擇排序方式後，將參數回傳至 MainViewModel 以觸發數據重整。
+ * 3. UX 優化：點擊選項後自動收起選單，並提供明確的視覺回饋。
+ */
 @AndroidEntryPoint
 class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
 

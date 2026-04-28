@@ -21,16 +21,26 @@ import com.timmymike.viewtool.setMarginByDpUnit
 import com.timmymike.viewtool.setRippleBackground
 import dagger.hilt.android.AndroidEntryPoint
 
-
+/**
+ * @author timmy
+ *
+ * [MainActivity] 應用程式主進入點容器。
+ *
+ * 主要功能：
+ * 1. 作為導航容器 (Fragment Container)，管理不同業務頁面的切換。
+ * 2. 實作沉浸式狀態列適配，優化視覺體驗。
+ * 3. 處理螢幕配置變更 (Configuration Changes)，動態調整 UI 佈局 (如 SideSheet / BottomSheet)。
+ */
 @AndroidEntryPoint
 class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
 
     private val pageViewModel: PageViewModel by viewModels()
     private val dataViewModel: MainViewModel by viewModels()
 
-    // 持有引用以便管理
+    // 持有引用以便管理 // 要可為null // 若用lateinit的話，會在onPause時一樣要判斷是否有指定過值
     private var activeSortMenu: Dialog? = null
     private var activeBottomSheet: SortOptionsBottomSheet? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,26 +55,17 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     private fun initView() = binding.run {
         setToolbarVisible(false)
         pageViewModel.viewModelSwitchFragment(MainFragment())
-        ivMenu.setMarginByDpUnit(0, 33, 8, 0) // 時間不夠，寫死
-        ivMenu.background = (getRoundBgById(5, R.color.background, R.color.icon_stroke, 1))
-        ivMenu.setRippleBackground(getResourceColor(R.color.icon_stroke))
+        ivMenu.apply {
+            setMarginByDpUnit(0, 33, 8, 0) // 時間不夠詳細研究，寫死
+            background = (getRoundBgById(5, R.color.theme_light, R.color.icon_stroke, 1))
+            setRippleBackground(getResourceColor(R.color.icon_stroke))
+        }
     }
 
 
     private fun initObservable() {
-
         pageViewModel.switchFragmentLiveData.observe(this@MainActivity) {
-            switchFragment(it.first, it.second)
-        }
-
-        pageViewModel.removeFragmentLiveData.observe(this@MainActivity) {
-            removeFragment(it)
-        }
-
-        pageViewModel.removeAllFragmentLiveData.observe(this@MainActivity) {
-            if (it == 1) {
-                clearFragmentStack()
-            }
+            switchFragment(it)
         }
 
     }
@@ -75,6 +76,7 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
         }
     }
 
+    // 這裡要判斷當前螢幕是水平還是垂直，去顯示不同的側欄
     private fun showSortMenu() {
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -103,12 +105,8 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     }
 
     @SuppressLint("CommitTransaction")
-    fun switchFragment(fragment: Fragment, needReplace: Boolean = false) {
+    fun switchFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
-        if (needReplace) {
-            transaction.replace(binding.containerContent.id, fragment, fragment.javaClass.name).commit()
-        } else {
-            // 隱藏當前 Fragment
             supportFragmentManager.findFragmentById(binding.containerContent.id)?.let {
                 if (judgeIsNeedHideFragment(it)) transaction.hide(it) else transaction.remove(it)
             }
@@ -121,7 +119,6 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
                 transaction.add(binding.containerContent.id, fragment, fragment.javaClass.name)
             }
             transaction.commitAllowingStateLoss()
-        }
 
     }
 
@@ -129,26 +126,5 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     private fun judgeIsNeedHideFragment(fragment: Fragment): Boolean = listOf(
         MainFragment::class
     ).any { fragment::class == it }
-
-    private fun removeFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        // 移除傳入的 Fragment
-        supportFragmentManager.findFragmentById(binding.containerContent.id)?.let {
-            transaction.remove(fragment)
-        }
-
-        transaction.commit()
-
-    }
-
-    @SuppressLint("CommitTransaction")
-    fun clearFragmentStack() {
-        supportFragmentManager.run {
-            fragments.forEach {
-                beginTransaction().remove(it)
-            }
-            beginTransaction().commit()
-        }
-    }
 
 }

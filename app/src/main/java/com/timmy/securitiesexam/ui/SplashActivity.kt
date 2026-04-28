@@ -21,7 +21,18 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
+/**
+ * @author timmy
+ *
+ * [SplashActivity] 啟動導引頁面。
+ *
+ * 主要功能：
+ * 1. 初始化應用程式環境與預載核心數據 (透過 SplashViewModel)。
+ * 2. 實作啟動計時器 (3秒)，確保品牌曝光並防止網路請求卡死導致黑屏。
+ * 3. 監控 API 請求狀態 (Idle, ApiComplete, DBWriting, Error)。
+ * 4. 根據業務狀態顯示下載進度 (Progress Bar) 與當前狀態提示文字。
+ * 5. 異常處理：當數據獲取失敗時彈出錯誤對話框並支援重新嘗試。
+ */
 @SuppressLint("CustomSplashScreen")
 @AndroidEntryPoint
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
@@ -35,7 +46,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        "splash 初始化".forLoge("當前進度=>")
         initViewModel()
         initView()
         initObserver()
@@ -77,7 +87,6 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 viewModel.uiState.collect { state ->
-                    state.forLoge("當前進度=>")
                     if (state.stage == SplashStage.Idle) {
                         return@collect
                     }

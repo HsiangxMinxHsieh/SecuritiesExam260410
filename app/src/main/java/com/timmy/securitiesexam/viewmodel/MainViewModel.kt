@@ -12,7 +12,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * 處理資料的 ViewModel，主要用於登入與資料讀寫。
+ * @author timmy
+ *
+ * [MainViewModel] 主頁面業務邏輯與數據中心。
+ *
+ * 主要功能：
+ * 1. 股票數據抓取：串接 Repository 獲取最新 TWSE OpenAPI 數據。
+ * 2. 排序引擎：實作多種金融指標的降序/升序算法，並保持當前排序狀態。
+ * 3. 狀態保持：在螢幕旋轉後維持現有股票列表與滾動位置。
+ * 4. 提供 UI 使用的數據封裝，確保數據處理與 UI 渲染徹底分離。
  */
 @HiltViewModel
 class MainViewModel @Inject constructor(

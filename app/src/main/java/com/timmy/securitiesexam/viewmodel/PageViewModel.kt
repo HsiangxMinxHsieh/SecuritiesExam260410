@@ -9,64 +9,29 @@ import java.util.Stack
 import javax.inject.Inject
 
 /**
- * 頁面流程的 ViewModel，負責切換 Fragment、換頁與相關 LiveData。
+ * @author timmy
+ *
+ * [PageViewModel] 負責管理應用程式的導航邏輯與全域 UI 狀態。
+ *
+ * 主要功能：
+ * 1. 導航控制：透過封裝的 LiveData/Flow 管理目前應顯示的 Fragment 頁面。
+ * 2. 狀態共享：在多個 Fragment（測驗是只有一個） 之間傳遞簡單的導航事件，確保畫面跳轉逻辑不與具體頁面耦合。
  */
 @HiltViewModel
 class PageViewModel @Inject constructor(
 ) : ViewModel() {
 
     // 頁面切換邏輯
-    private val _switchFragmentLiveData = MutableLiveData<Pair<Fragment, Boolean>>()
-    val switchFragmentLiveData: LiveData<Pair<Fragment, Boolean>> = _switchFragmentLiveData
-
-    private val _removeFragmentLiveData = MutableLiveData<Fragment>()
-    val removeFragmentLiveData: LiveData<Fragment> = _removeFragmentLiveData
-
-    private val _removeAllFragmentLiveData = MutableLiveData<Int>()
-    val removeAllFragmentLiveData: LiveData<Int> = _removeAllFragmentLiveData
-
-    // 僅供主選單頁面（已註解）
-//    private val _switchClassLiveData = MutableLiveData<Int>()
-//    val switchClassLiveData: LiveData<Int> = _switchClassLiveData
-//
-//    fun setClassSelectPosition(defaultSelect: Int) {
-//        _switchClassLiveData.postValue(defaultSelect)
-//    }
+    private val _switchFragmentLiveData = MutableLiveData<Fragment>()
+    val switchFragmentLiveData: LiveData<Fragment> = _switchFragmentLiveData
 
     // 上一頁的儲存庫
     private val fragmentStack = Stack<Fragment>()
 
-    fun viewModelSwitchFragment(switchFragment: Fragment, needReplace: Boolean = false) { // 點餐流程中 needReplace 宜為 false，返回主選單時可保留堆疊狀態。
+    fun viewModelSwitchFragment(switchFragment: Fragment) { // 點餐流程中 needReplace 宜為 false，返回主選單時可保留堆疊狀態。
         fragmentStack.push(switchFragment)
-        _switchFragmentLiveData.postValue(Pair(switchFragment, needReplace))
+        _switchFragmentLiveData.postValue(switchFragment)
     }
 
-    // 用於返回起始頁
-//    fun returnToWelcomePage() {  // 回到歡迎頁，要刪除所有Fragment的stack。
-//        clearStack()
-//        _removeAllFragmentLiveData.postValue(1) // 先清空Fragment
-//        WelcomePageFragment().let {
-//            fragmentStack.push(it)
-//            _switchFragmentLiveData.postValue(Pair(it, true))
-//        }
-//    }
-
-
-    // 返回上一頁
-    fun navigateBack() {
-        if (fragmentStack.size > 1) {
-            fragmentStack.pop() // 移除當前頁面
-            _switchFragmentLiveData.postValue(Pair(fragmentStack.peek(), false)) // 返回上一頁
-        }
-    }
-
-    // 結束此頁面
-    fun finish(fragment: Fragment) {
-        if (fragmentStack.size > 1) {
-            fragmentStack.pop() // 移除當前頁面
-            _removeFragmentLiveData.postValue(fragment) // 請於 FragmentManager 中移除此頁面
-            _switchFragmentLiveData.postValue(Pair(fragmentStack.peek(), false)) // 返回上一頁
-        }
-    }
 
 }

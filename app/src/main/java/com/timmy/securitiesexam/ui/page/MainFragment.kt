@@ -24,8 +24,23 @@ import com.timmymike.viewtool.getScreenWidthPixels
 import com.timmymike.viewtool.pxToDp
 import com.timmymike.viewtool.resetLayoutTextSize
 import com.timmymike.viewtool.setMarginByDpUnit
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
+/**
+ * @author timmy
+ *
+ * [MainFragment] 股票資訊展示頁面。
+ *
+ * 主要功能：
+ * 1. 股票列表呈現：利用 RecyclerView 高效顯示全市場股票資訊。
+ * 2. 智慧預載機制 (Pagination)：滑動監聽並預先加載下一頁數據，確保流暢體驗。
+ * 3. 數據視覺化：實作「紅漲綠跌」染色邏輯與「等寬字體」對齊邏輯。
+ * 4. 排序與篩選：串接 ViewModel 實作多維度指標 (本益比、殖利率等) 的排序功能。
+ * 5. 動態佈局計算：根據狀態列高度與螢幕比例，動態微調佈局邊距與文字大小。
+ */
+
+@AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
 
     private val dataViewModel: MainViewModel by activityViewModels()
