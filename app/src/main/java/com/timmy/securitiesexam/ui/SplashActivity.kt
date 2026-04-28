@@ -14,7 +14,7 @@ import com.timmy.securitiesexam.viewmodel.SplashStage
 import com.timmy.securitiesexam.viewmodel.SplashUiState
 import com.timmy.securitiesexam.viewmodel.SplashViewModel
 import com.timmymike.componenttool.BaseActivity
-import com.timmymike.logtool.forLoge
+import com.timmymike.timetool.TimeUnits
 import com.timmymike.viewtool.getResourceString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -37,6 +37,10 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
+    companion object {
+        private const val SPLASH_MIN_DURATION = TimeUnits.oneSec * 3 // 等待三秒鐘
+    }
+
     private val viewModel: SplashViewModel by viewModels()
 
     private var splashJob: Job? = null
@@ -46,16 +50,12 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initViewModel()
         initView()
         initObserver()
         initData()
         startSplashTimer()
     }
 
-    private fun initViewModel() { // 初始化ViewModel的內容 // 如果已初始化，需要
-
-    }
 
     private fun initView() = binding.run {
         supportActionBar?.hide()
@@ -148,12 +148,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
     private fun startMainActivity() {
         splashJob?.cancel()
 
-        "splash 即將跳頁".forLoge("當前進度=>")
-
         gotoActivity(MainActivity::class.java, closeSelf = true)
     }
 
-    companion object {
-        private const val SPLASH_MIN_DURATION = 3_000L
-    }
+
 }

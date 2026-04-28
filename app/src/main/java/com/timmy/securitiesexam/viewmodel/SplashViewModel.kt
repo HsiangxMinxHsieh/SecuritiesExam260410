@@ -54,11 +54,12 @@ class SplashViewModel @Inject constructor(
         private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 5
     }
 
+    // Splash的狀態。
     private val _uiState = MutableStateFlow(SplashUiState())
     val uiState = _uiState.asStateFlow()
 
-    // ===== Public API =====
     private var splashJob: Job? = null
+
     fun start() {
         if (splashJob?.isActive == true) { // 螢幕轉向時，不重複啟動
             return
@@ -87,7 +88,7 @@ class SplashViewModel @Inject constructor(
         _uiState.update { it.copy(timerFinished = true) }
     }
 
-    // ===== Business Logic =====
+    // 商業邏輯新增資料
 
     private fun shouldFetchData(): Boolean {
         return dsRepo.getDataInterval + GET_DATA_INTERVAL < nowTime
@@ -210,7 +211,7 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    // ===== UI State Handling =====
+    // UI 狀態處理
 
     private fun updateProgress() {
         _uiState.update {
