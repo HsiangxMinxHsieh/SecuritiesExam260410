@@ -14,6 +14,7 @@ import com.timmy.securitiesexam.viewmodel.SplashUiState
 import com.timmy.securitiesexam.viewmodel.SplashViewModel
 import com.timmymike.componenttool.BaseActivity
 import com.timmymike.logtool.forLoge
+import com.timmymike.viewtool.getResourceString
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -108,6 +109,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
             SplashStage.DBWriting -> {
                 binding.tvDownloadSubTitle.text =
                     getString(R.string.splash_writing)
+            }
+            is SplashStage.Error -> {
+                showMessageDialog(getResourceString(R.string.get_data_error), {
+                    viewModel.start()
+                })
             }
 
             else -> Unit
