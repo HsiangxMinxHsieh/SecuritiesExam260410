@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet"
+    android:paddingBottom="20dp"
+    tools:context=".ui.page.SortOptionsBottomSheet">
+
+    <View
+        android:id="@+id/viewHandle"
+        android:layout_width="32dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_handle_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSortDesc"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="8dp"
+        android:background="?attr/colorSurface"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:text="@string/sort_button_desc"
+        android:textColor="@color/text_color_main"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewHandle" />
+
+    <TextView
+        android:id="@+id/tvSortAsc"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:background="?attr/colorSurface"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:text="@string/sort_button_asc"
+        android:textColor="@color/text_color_main"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSortDesc" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

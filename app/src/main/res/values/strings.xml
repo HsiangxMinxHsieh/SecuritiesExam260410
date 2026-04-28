@@ -9,5 +9,7 @@
     <string name="splash_downloading">更新資料下載中…</string>
     <string name="splash_writing">更新資料寫入中…</string>
     <string name="card_alert_content">【%1$s】\n本\u3000益\u3000比：%2$s\n殖\u3000利\u3000率：%3$s\n股價淨值比：%4$s</string>
+    <string name="sort_button_desc">依股票代號降序</string>
+    <string name="sort_button_asc">依股票代號升序</string>
 
 </resources>

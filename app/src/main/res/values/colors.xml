@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
     <color name="theme_cyan_light">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="theme_cyan">#FF018786</color>
-    <color name="black">#FF000000</color>
+    <color name="theme_dark">#FF000000</color>
     <color name="rise">#FF0000</color>
     <color name="fall">#14bd43</color>
     <color name="remain">#808080</color>
+    <color name="ripple">#696969</color>
     <color name="data_default">#696969</color>
     <color name="text_color_main">#FF000000</color>
     <color name="text_color_sub">#FF888888</color>
     <color name="item_text_color_label">#444444</color>
     <color name="item_text_color_text">#333333</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="handle_bar_color">#746f78</color>
+    <color name="theme_light">#FFFFFFFF</color>
     <color name="background">#FFFFFFFF</color>
-    <color name="DarkGray">#a9a9a9</color>
-    <color name="red">#ff0000</color>
-    <color name="transparent">#00000000</color>
     <color name="icon_stroke">#dcdcdc</color>
-    <color name="LimeGreen">#32cd32</color>
 
-    <color name="tran_black">#99000000</color>
+    <color name="downloading_background">#99000000</color>
 </resources>

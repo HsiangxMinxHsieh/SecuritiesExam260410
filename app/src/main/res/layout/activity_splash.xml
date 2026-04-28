@@ -35,7 +35,7 @@
         android:id="@+id/clDownload"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/tran_black"
+        android:background="@color/downloading_background"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1"

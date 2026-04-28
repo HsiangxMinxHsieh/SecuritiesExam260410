@@ -43,7 +43,7 @@ class SplashViewModel @Inject constructor(
         private const val API_PROGRESS_WEIGHT = 0.3f
         private const val DB_PROGRESS_WEIGHT = 0.7f
         private const val CHUNK_SIZE = 500
-        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 10
+        private const val GET_DATA_INTERVAL = TimeUnits.oneHour
     }
 
     private val _uiState = MutableStateFlow(SplashUiState())

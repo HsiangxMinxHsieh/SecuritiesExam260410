@@ -1,12 +1,16 @@
 package com.timmy.securitiesexam.ui
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.databinding.ActivityMainBinding
 import com.timmy.securitiesexam.ui.page.MainFragment
+import com.timmy.securitiesexam.ui.page.SortOptionSideSheet
+import com.timmy.securitiesexam.ui.page.SortOptionsBottomSheet
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmy.securitiesexam.viewmodel.PageViewModel
 import com.timmymike.componenttool.BaseToolBarActivity
@@ -23,6 +27,9 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     private val pageViewModel: PageViewModel by viewModels()
     private val dataViewModel: MainViewModel by viewModels()
 
+    // 持有引用以便管理
+    private var activeSortMenu: Dialog? = null
+    private var activeBottomSheet: SortOptionsBottomSheet? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,8 +69,35 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
 
     private fun initEvent() = binding.run {
         ivMenu.click {
-            dataViewModel.switchSequence()
+            showSortMenu()
         }
+    }
+
+    private fun showSortMenu() {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        if (isLandscape) {
+            // 顯示 SideSheet
+            activeSortMenu = SortOptionSideSheet(this@MainActivity, dataViewModel).apply {
+                show()
+            }
+        } else {
+            // 顯示 BottomSheet
+            activeBottomSheet = SortOptionsBottomSheet().also {
+                it.show(supportFragmentManager, it.javaClass.name)
+            }
+        }
+    }
+
+    /** 處理螢幕轉向時關閉選單 */
+    override fun onPause() {
+        super.onPause()
+        // 當 Activity 即將因旋轉重啟時，主動關閉 Dialog 與 Fragment
+        activeSortMenu?.dismiss()
+        activeBottomSheet?.dismiss()
+
+        activeSortMenu = null
+        activeBottomSheet = null
     }
 
     @SuppressLint("CommitTransaction")

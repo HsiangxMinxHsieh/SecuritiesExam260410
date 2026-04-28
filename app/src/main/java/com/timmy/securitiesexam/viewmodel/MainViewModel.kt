@@ -24,27 +24,15 @@ class MainViewModel @Inject constructor(
     val uiData = _uiData.asStateFlow()
 
     // 當前資料排序 // true為升序，false為降序
-    private var isAscending: Boolean = false // 預設為降序
+    private var sequenceAscending: Boolean = false // 預設為降序
 
     private var currentOffset = 0
     private var isLastPage = false
     private var isLoading = false
     private val limit = 100
 
-    fun switchSequence() {
-        isAscending = !isAscending
-        resetPagination()
-        fetchStockData()
-    }
-
-    fun switchSequenceToAscending() {
-        isAscending = true
-        resetPagination()
-        fetchStockData()
-    }
-
-    fun switchSequenceToDescending() {
-        isAscending = false
+    fun switchSequence(isAscending: Boolean) {
+        sequenceAscending = isAscending
         resetPagination()
         fetchStockData()
     }
@@ -55,7 +43,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
             // 根據排序需求呼叫 Dao
-            val newData = if (isAscending) {
+            val newData = if (sequenceAscending) {
                 roomRepo.getDataAsc(currentOffset)
             } else {
                 roomRepo.getDataDesc(currentOffset)
