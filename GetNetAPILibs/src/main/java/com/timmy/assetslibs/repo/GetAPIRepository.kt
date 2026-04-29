@@ -7,17 +7,9 @@ import com.timmy.base.data.response.StockAVGData
 import com.timmy.base.data.response.StockData
 import com.timmymike.logtool.loge
 import retrofit2.Response
-import retrofit2.Retrofit
 import javax.inject.Inject
 
-class GetAPIRepository @Inject constructor(/*private val context: Application*/) {
-
-    @Inject
-    lateinit var retrofit: Retrofit
-
-    private val apiService by lazy {
-        retrofit.create(ApiService::class.java)
-    }
+class GetAPIRepository @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getBBUData(): ResultState<BBUData> {
         return safeApiCall(getCallerTag()) { apiService.getBbuData() }

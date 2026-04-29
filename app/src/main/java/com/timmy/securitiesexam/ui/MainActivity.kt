@@ -107,18 +107,18 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     @SuppressLint("CommitTransaction")
     fun switchFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
-            supportFragmentManager.findFragmentById(binding.containerContent.id)?.let {
-                if (judgeIsNeedHideFragment(it)) transaction.hide(it) else transaction.remove(it)
-            }
+        supportFragmentManager.findFragmentById(binding.containerContent.id)?.let {
+            if (judgeIsNeedHideFragment(it)) transaction.hide(it) else transaction.remove(it)
+        }
 
-            supportFragmentManager.findFragmentByTag(fragment.javaClass.name)?.let {
-                // 顯示已存在的 Fragment
-                transaction.show(it)
-            } ?: run {
-                // 新增 Fragment
-                transaction.add(binding.containerContent.id, fragment, fragment.javaClass.name)
-            }
-            transaction.commitAllowingStateLoss()
+        supportFragmentManager.findFragmentByTag(fragment.javaClass.name)?.let {
+            // 顯示已存在的 Fragment
+            transaction.show(it)
+        } ?: run {
+            // 新增 Fragment
+            transaction.add(binding.containerContent.id, fragment, fragment.javaClass.name)
+        }
+        transaction.commitAllowingStateLoss()
 
     }
 

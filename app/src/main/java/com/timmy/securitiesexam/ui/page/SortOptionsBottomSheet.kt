@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
 
     private lateinit var _binding: FragmentBottomSheetBinding
+
     private val binding get() = _binding
 
     private val dataViewModel: MainViewModel by activityViewModels()

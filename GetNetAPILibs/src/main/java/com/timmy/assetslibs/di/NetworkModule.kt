@@ -1,12 +1,11 @@
 package com.timmy.assetslibs.di
 
+import com.timmy.assetslibs.api.ApiService
 import com.timmy.base.cons.GlobalConst
-import com.timmy.getnetapi.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -46,6 +45,12 @@ class NetworkModule {
             .baseUrl(GlobalConst.API_BASE_URL)
             .client(okHttpClient)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
     }
 
 }
