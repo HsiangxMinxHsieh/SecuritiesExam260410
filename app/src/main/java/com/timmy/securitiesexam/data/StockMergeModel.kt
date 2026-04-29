@@ -1,18 +1,22 @@
 package com.timmy.securitiesexam.data
 
+import com.timmy.base.cons.GlobalConst
+
+private const val defaultValue = GlobalConst.EMPTY_DATA_VALUE
+
 data class StockMergeModel(
     val code: String,
     var name: String = "",
-    var openingPrice: String = "",
-    var highestPrice: String = "",
-    var lowestPrice: String = "",
-    var closingPrice: String = "",
-    var change: String = "",
-    var transaction: String = "",
-    var tradeVolume: String = "",
-    var tradeValue: String = "",
-    var monthlyAveragePrice: String = "",
-    var dividendYield: String = "",
-    var pBratio: String = "",
-    var pEratio: String = ""
+    var openingPrice: Double = defaultValue,
+    var highestPrice: Double = defaultValue,
+    var lowestPrice: Double = defaultValue,
+    var closingPrice: Double = defaultValue,
+    var change: Double = defaultValue,
+    var transaction: Double = defaultValue,
+    var tradeVolume: Double = defaultValue,
+    var tradeValue: Double = defaultValue,
+    var monthlyAveragePrice: Double = defaultValue,
+    var dividendYield: Double = defaultValue,
+    var pBratio: Double = defaultValue,
+    var pEratio: Double = defaultValue
 )

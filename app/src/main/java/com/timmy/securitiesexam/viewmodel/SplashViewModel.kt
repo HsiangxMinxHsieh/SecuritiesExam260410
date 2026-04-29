@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.timmy.assetslibs.repo.GetAPIRepository
 import com.timmy.base.baseResponse.ResultState
+import com.timmy.base.cons.GlobalConst
 import com.timmy.base.data.response.BBUDataItem
 import com.timmy.base.data.response.StockAVGDataItem
 import com.timmy.base.data.response.StockDataItem
@@ -109,6 +110,14 @@ class SplashViewModel @Inject constructor(
             )
         }
 
+    fun String?.toSafeDouble(): Double {
+        return this
+            ?.replace(",", "")
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() && it != "--" && it != "-" }
+            ?.toDoubleOrNull() ?: GlobalConst.EMPTY_DATA_VALUE
+    }
+
     private fun mergeData(
         bbu: List<BBUDataItem>,
         avg: List<StockAVGDataItem>,
@@ -123,33 +132,33 @@ class SplashViewModel @Inject constructor(
 
         // BBU
         bbu.forEach {
-            val item = getOrCreate(it.code.toString())
-            item.name = it.name.toString()
-            item.dividendYield = it.dividendYield.toString()
-            item.pBratio = it.pBratio.toString()
-            item.pEratio = it.pEratio.toString()
+            val item = getOrCreate(it.code.orEmpty())
+            item.name = it.name.orEmpty()
+            item.dividendYield = it.dividendYield.toSafeDouble()
+            item.pBratio = it.pBratio.toSafeDouble()
+            item.pEratio = it.pEratio.toSafeDouble()
         }
 
         // AVG
         avg.forEach {
-            val item = getOrCreate(it.code.toString())
-            item.name = it.name.toString()
-            item.closingPrice = it.closingPrice.toString()
-            item.monthlyAveragePrice = it.monthlyAveragePrice.toString()
+            val item = getOrCreate(it.code.orEmpty())
+            item.name = it.name.orEmpty()
+            item.closingPrice = it.closingPrice.toSafeDouble()
+            item.monthlyAveragePrice = it.monthlyAveragePrice.toSafeDouble()
         }
 
         // STOCK
         stock.forEach {
-            val item = getOrCreate(it.code.toString())
-            item.name = it.name.toString()
-            item.tradeVolume = it.tradeVolume.toString()
-            item.tradeValue = it.tradeValue.toString()
-            item.openingPrice = it.openingPrice.toString()
-            item.highestPrice = it.highestPrice.toString()
-            item.lowestPrice = it.lowestPrice.toString()
-            item.closingPrice = it.closingPrice.toString()
-            item.change = it.change.toString()
-            item.transaction = it.transaction.toString()
+            val item = getOrCreate(it.code.orEmpty())
+            item.name = it.name.orEmpty()
+            item.tradeVolume = it.tradeVolume.toSafeDouble()
+            item.tradeValue = it.tradeValue.toSafeDouble()
+            item.openingPrice = it.openingPrice.toSafeDouble()
+            item.highestPrice = it.highestPrice.toSafeDouble()
+            item.lowestPrice = it.lowestPrice.toSafeDouble()
+            item.closingPrice = it.closingPrice.toSafeDouble()
+            item.change = it.change.toSafeDouble()
+            item.transaction = it.transaction.toSafeDouble()
         }
 
         val context = App.instance.applicationContext
@@ -159,14 +168,11 @@ class SplashViewModel @Inject constructor(
         val colorDefault = context.getResourceColor(R.color.data_default)
 
         // 內部方法：判斷資料大小與顏色
-        fun getColor(current: String?, target: String?): Int {
-            val curVal = current?.toDoubleOrNull()
-            val tarVal = target?.toDoubleOrNull()
+        fun getColor(current: Double, target: Double): Int {
 
             return when {
-                curVal == null || tarVal == null -> colorDefault
-                curVal > tarVal -> colorRise
-                curVal < tarVal -> colorFall
+                current > target -> colorRise
+                current < target -> colorFall
                 else -> colorRemain
             }
         }
@@ -187,9 +193,9 @@ class SplashViewModel @Inject constructor(
                 dividendYield = it.dividendYield,
                 pBratio = it.pBratio,
                 pEratio = it.pEratio,
-                openingPriceColor = getColor(it.openingPrice, it.monthlyAveragePrice), // 題目沒有說要做，但我多做的 // 希望不要被扣分
+                openingPriceColor = getColor(it.openingPrice, it.monthlyAveragePrice),
                 closingPriceColor = getColor(it.closingPrice, it.monthlyAveragePrice), // 收盤價高於月平均價請用紅字,低於請用綠字顯示
-                changeColor = getColor(it.change, "0") // 	漲跌價差 正的請用紅字,負的請用綠字
+                changeColor = getColor(it.change, 0.0) // 	漲跌價差 正的請用紅字,負的請用綠字
             )
         }
     }

@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.timmy.base.cons.GlobalConst
 import com.timmy.roomlibs.database.tables.stock.StockEntity
 import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.databinding.FragmentMainLayoutBinding
@@ -19,6 +20,8 @@ import com.timmy.securitiesexam.ui.util.getStatusBarHeight
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.BaseFragment
 import com.timmymike.componenttool.ViewBindingAdapter
+import com.timmymike.logtool.forLoge
+import com.timmymike.logtool.format
 import com.timmymike.viewtool.clickWithTrigger
 import com.timmymike.viewtool.getScreenWidthPixels
 import com.timmymike.viewtool.pxToDp
@@ -89,12 +92,12 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
             tvClosingPrice.text = data.closingPrice.emptyToDash()
             tvClosingPrice.setTextColor(data.closingPriceColor)
 
-            tvMonthlyAveragePrice.text = data.monthlyAveragePrice
+            tvMonthlyAveragePrice.text = data.monthlyAveragePrice.emptyToDash()
 
             tvHighestPrice.text = data.highestPrice.emptyToDash()
             tvLowestPrice.text = data.lowestPrice.emptyToDash()
 
-            tvChange.text = data.change.emptyToDash()
+            tvChange.text = data.change.formatTo4Zeros()
             tvChange.setTextColor(data.changeColor)
 
             tvTransactionCount.text = data.transactionCount.emptyToDash()
@@ -143,7 +146,10 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
 
 
     // 如果沒有資料的話，顯示「-」（暫定）（未討論）
-    private fun String?.emptyToDash() = this?.takeIf { data -> data.isNotEmpty() } ?: "-"
+    private fun Double?.emptyToDash() = this?.takeIf { data -> data != GlobalConst.EMPTY_DATA_VALUE }?.format("0.###########") ?: "-"
+
+    // 漲跌價差有4個小數點
+    private fun Double?.formatTo4Zeros() = this?.takeIf { data -> data != GlobalConst.EMPTY_DATA_VALUE }?.format("0.0000") ?: "-"
 
     // AlertDialog部分( 點選牌卡跳alert 資訊顯示  本益比、殖利率(%)、股價淨值比)
     private fun StockEntity.getFormattedAlertMsg(): String {
@@ -157,14 +163,14 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
     }
 
     // 格式化文字內容
-    private fun String?.formatAsMetric(unit: String = "倍"): String {
-        val value = this?.toDoubleOrNull()
-        if (value == null || value == 0.0) {
+    private fun Double?.formatAsMetric(unit: String = "倍"): String {
+        this?.forLoge("要顯示的內容是=>")
+        if (this == GlobalConst.EMPTY_DATA_VALUE) {
             // 確保 "-" 的對齊位置與小數點的部分一致（寬度 4 ）
             return "-".padStart(4)
         }
 
-        return "%6.2f %s".format(value, unit)
+        return "%6.2f %s".format(this, unit)
     }
 
     // 使用等寬字體，以對齊對話框內的文字
