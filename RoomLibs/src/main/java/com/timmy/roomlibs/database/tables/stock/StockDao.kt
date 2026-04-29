@@ -3,7 +3,9 @@ package com.timmy.roomlibs.database.tables.stock
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Upsert
+import androidx.sqlite.db.SupportSQLiteQuery
 
 /**
  *     author: Timmy
@@ -32,4 +34,6 @@ interface StockDao {
     @Query("DELETE FROM StockEntity")
     fun deleteAll()
 
+    @RawQuery(observedEntities = [StockEntity::class])
+    suspend fun getStocksRaw(query: SupportSQLiteQuery): List<StockEntity>
 }

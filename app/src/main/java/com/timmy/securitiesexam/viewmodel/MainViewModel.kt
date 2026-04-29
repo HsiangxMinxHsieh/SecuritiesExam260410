@@ -2,8 +2,11 @@ package com.timmy.securitiesexam.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.timmy.assetslibs.repo.AssetsRepository
 import com.timmy.roomlibs.database.tables.stock.StockEntity
 import com.timmy.roomlibs.repo.RoomRepository
+import com.timmy.securitiesexam.data.SortItem
+import com.timmymike.logtool.toDataBeanList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,20 +28,34 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val roomRepo: RoomRepository,
+    private val asRepo: AssetsRepository,
 ) : ViewModel() {
 
     // 當前畫面顯示資料
     private val _uiData = MutableStateFlow(listOfNotNull<StockEntity>())
     val uiData = _uiData.asStateFlow()
 
-    // 當前資料排序 // true為升序，false為降序
+    // 當前資料排序 // true為升序，false為降序 // 修改建議後將刪除
     private var sequenceAscending: Boolean = false // 預設為降序
+
+    // 1. 定義排序狀態的 Flow
+    private val _sortOption = MutableStateFlow(SortOption())
+    val sortOption = _sortOption.asStateFlow()
 
     private var currentOffset = 0
     private var isLastPage = false
     private var isLoading = false
-    private val limit = 100
 
+    /**
+     * 供 UI 呼叫的切換方法
+     */
+    fun updateSort(column: String, isAscending: Boolean) {
+        _sortOption.value = SortOption(column = column, isAscending = isAscending)
+        resetPagination()
+        fetchStockData()
+    }
+
+    // 修改建議後將刪除
     fun switchSequence(isAscending: Boolean) {
         sequenceAscending = isAscending
         resetPagination()
@@ -51,11 +68,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             isLoading = true
             // 根據排序需求呼叫 Dao
-            val newData = if (sequenceAscending) {
-                roomRepo.getDataAsc(currentOffset)
-            } else {
-                roomRepo.getDataDesc(currentOffset)
-            }
+            val newData = roomRepo.getSortedStocks(sortOption.value.column, sortOption.value.isAscending, currentOffset)
 
             if (newData.isEmpty()) {
                 isLastPage = true
@@ -67,17 +80,28 @@ class MainViewModel @Inject constructor(
                 _uiData.value = updatedList
 
                 // 增加 offset，供下次使用
-                currentOffset += limit
+                currentOffset += RoomRepository.LIMIT
             }
             isLoading = false
         }
     }
 
-    // 當切換排序時，記得重置所有狀態
+    // 當切換排序時，重置所有狀態
     fun resetPagination() {
         currentOffset = 0
         isLastPage = false
         _uiData.value = emptyList()
     }
 
+    //  getAssetsContent 會切換到 IO 執行緒由方法內部處理
+    suspend fun getSortItems(): List<SortItem> {
+        return asRepo.getAssetsContent("sortOption.json").toDataBeanList<SortItem>() ?: emptyList()
+    }
+
 }
+
+// 資料排序選項
+data class SortOption(
+    val column: String = "code",
+    val isAscending: Boolean = false  // 預設為降序
+)

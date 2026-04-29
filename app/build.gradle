@@ -73,6 +73,7 @@ dependencies {
     implementation project(':DatastoreLibs')
     implementation project(':RoomLibs')
     implementation project(':Base')
+    implementation project(':AssetsLibs')
 
 }
 

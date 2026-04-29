@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_bottom_sheet"
-    android:paddingBottom="20dp"
+    android:paddingBottom="10dp"
     tools:context=".ui.page.SortOptionsBottomSheet">
 
     <View
@@ -18,33 +18,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideDivide"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSortOption"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideDivide"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewHandle"
+        tools:listitem="@layout/item_sort_option" />
+
     <TextView
         android:id="@+id/tvSortDesc"
         android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="0dp"
         android:background="?attr/colorSurface"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:paddingHorizontal="24dp"
-        android:text="@string/sort_button_desc"
+        android:text="@string/sort_option_desc"
         android:textColor="@color/text_color_main"
         android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvSortAsc"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/viewHandle" />
+        app:layout_constraintStart_toEndOf="@+id/guideDivide"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvSortAsc"
         android:layout_width="0dp"
-        android:layout_height="64dp"
+        android:layout_height="0dp"
         android:background="?attr/colorSurface"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:paddingHorizontal="24dp"
-        android:text="@string/sort_button_asc"
+        android:text="@string/sort_option_asc"
         android:textColor="@color/text_color_main"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideDivide"
         app:layout_constraintTop_toBottomOf="@id/tvSortDesc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

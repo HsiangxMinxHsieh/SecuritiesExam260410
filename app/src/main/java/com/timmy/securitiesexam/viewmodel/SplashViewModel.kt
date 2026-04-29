@@ -52,7 +52,7 @@ class SplashViewModel @Inject constructor(
         private const val API_PROGRESS_WEIGHT = 0.3f
         private const val DB_PROGRESS_WEIGHT = 0.7f
         private const val CHUNK_SIZE = 500
-        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 5
+        private const val GET_DATA_INTERVAL = TimeUnits.oneHour * 5 // 修改螢幕畫面中
     }
 
     // Splash的狀態。

@@ -1,0 +1,46 @@
+[
+  {
+    "sortName": "股票代號",
+    "sortOption": "code"
+  },
+  {
+    "sortName": "開盤價",
+    "sortOption": "openingPrice"
+  },
+  {
+    "sortName": "收盤價",
+    "sortOption": "closingPrice"
+  },
+  {
+    "sortName": "漲跌價差",
+    "sortOption": "change"
+  },
+  {
+    "sortName": "成交筆數",
+    "sortOption": "transactionCount"
+  },
+  {
+    "sortName": "成交股數",
+    "sortOption": "tradeVolume"
+  },
+  {
+    "sortName": "成交金額",
+    "sortOption": "tradeValue"
+  },
+  {
+    "sortName": "月平均價",
+    "sortOption": "monthlyAveragePrice"
+  },
+  {
+    "sortName": "殖利率",
+    "sortOption": "dividendYield"
+  },
+  {
+    "sortName": "股價淨值比",
+    "sortOption": "pBratio"
+  },
+  {
+    "sortName": "本益比",
+    "sortOption": "pEratio"
+  }
+]

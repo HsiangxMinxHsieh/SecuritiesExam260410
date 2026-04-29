@@ -19,8 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
-# 有用到反射，要避免混淆。
- -keepclassmembers class com.timmy.roomlibs.database.tables.stock.StockEntity {
-                <fields>;
-            }
