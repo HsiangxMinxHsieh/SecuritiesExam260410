@@ -83,7 +83,7 @@ class SortOptionSideSheet(
         }
     }
 
-    private fun updateUI(value: List<SortItem>) = binding.run {
+    private fun updateUI(list: List<SortItem>) = binding.run {
         rvSortOption.adapter = ViewBindingAdapter.create<ItemSortOptionHoriBinding, SortItem>(ItemSortOptionHoriBinding::inflate) { data, p ->
             data.sortName?.let { tvSortItem.text = it.toVertical() }
             tvSortItem.background = if (data.isSelected) {
@@ -104,8 +104,10 @@ class SortOptionSideSheet(
                 it.binding.root.resetTextSize()
             }
 
-            submitList(value)
+            submitList(list)
         }
+
+        rvSortOption.scrollToPosition(list.indexOfFirst { it.isSelected == true } - 2)
     }
 
     fun CharSequence.toVertical() = this.toString().toCharArray().joinToString("\n")

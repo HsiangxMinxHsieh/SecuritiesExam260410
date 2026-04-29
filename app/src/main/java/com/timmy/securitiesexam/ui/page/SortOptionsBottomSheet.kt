@@ -93,7 +93,7 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
         }
     }
 
-    private fun updateUI(value: List<SortItem>) = binding.run {
+    private fun updateUI(list: List<SortItem>) = binding.run {
         rvSortOption.adapter = ViewBindingAdapter.create<ItemSortOptionVertBinding, SortItem>(ItemSortOptionVertBinding::inflate) { data, p ->
             tvSortItem.text = data.sortName
             tvSortItem.background = if (data.isSelected) {
@@ -112,8 +112,9 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
             viewHolderInitialCallback = { it -> // 第一次產生
                 it.binding.root.resetTextSize()
             }
-            submitList(value)
+            submitList(list)
         }
+        rvSortOption.scrollToPosition(list.indexOfFirst { it.isSelected == true } - 2)
     }
 
     // 主要是要在onStart內，調整頁面高度
@@ -135,7 +136,7 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
             // 2. 強制展開狀態
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            // 3. (選配) 禁用「可摺疊」功能，讓它只能「開啟」或「關閉」
+            // 3. 禁用「可摺疊」功能，讓它只能「開啟」或「關閉」
             behavior.skipCollapsed = true
         }
     }
