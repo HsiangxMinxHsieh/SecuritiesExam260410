@@ -4,4 +4,9 @@
     <dimen name="item_text_size">18sp</dimen>
     <dimen name="item_bot_text_size">11sp</dimen>
 
+    <dimen name="dialog_round_corner">15dp</dimen>
+
+    <dimen name="dialog_vert_text_size">16sp</dimen>
+    <dimen name="dialog_hori_text_size">9sp</dimen>
+
 </resources>

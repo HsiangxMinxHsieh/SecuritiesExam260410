@@ -35,10 +35,7 @@ class MainViewModel @Inject constructor(
     private val _uiData = MutableStateFlow(listOfNotNull<StockEntity>())
     val uiData = _uiData.asStateFlow()
 
-    // 當前資料排序 // true為升序，false為降序 // 修改建議後將刪除
-    private var sequenceAscending: Boolean = false // 預設為降序
-
-    // 1. 定義排序狀態的 Flow
+    // 排序狀態的 Flow
     private val _sortOption = MutableStateFlow(SortOption())
     val sortOption = _sortOption.asStateFlow()
 
@@ -49,15 +46,8 @@ class MainViewModel @Inject constructor(
     /**
      * 供 UI 呼叫的切換方法
      */
-    fun updateSort(column: String, isAscending: Boolean) {
+    fun updateSort(column: String = sortOption.value.column, isAscending: Boolean = sortOption.value.isAscending) {
         _sortOption.value = SortOption(column = column, isAscending = isAscending)
-        resetPagination()
-        fetchStockData()
-    }
-
-    // 修改建議後將刪除
-    fun switchSequence(isAscending: Boolean) {
-        sequenceAscending = isAscending
         resetPagination()
         fetchStockData()
     }

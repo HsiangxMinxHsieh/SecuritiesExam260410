@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.data.SortItem
 import com.timmy.securitiesexam.databinding.FragmentBottomSheetBinding
-import com.timmy.securitiesexam.databinding.ItemSortOptionBinding
+import com.timmy.securitiesexam.databinding.ItemSortOptionVertBinding
 import com.timmy.securitiesexam.ui.util.getSelectBack
 import com.timmy.securitiesexam.ui.util.getUnSelectBack
 import com.timmy.securitiesexam.viewmodel.MainViewModel
@@ -20,6 +20,8 @@ import com.timmymike.componenttool.ViewBindingAdapter
 import com.timmymike.viewtool.click
 import com.timmymike.viewtool.getResourceColor
 import com.timmymike.viewtool.getScreenHeightPixels
+import com.timmymike.viewtool.resetLayoutTextSize
+import com.timmymike.viewtool.resetTextSize
 import com.timmymike.viewtool.setRippleBackground
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -58,17 +60,17 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
 
 
     private fun initView() = binding.run {
-
+        root.resetLayoutTextSize()
     }
 
     private fun initEvent() = binding.run {
         tvSortDesc.click {
-            dataViewModel.updateSort(dataViewModel.sortOption.value.column, false) // 降序
+            dataViewModel.updateSort(isAscending = false) // 降序
             dismiss()
         }
 
         tvSortAsc.click {
-            dataViewModel.updateSort(dataViewModel.sortOption.value.column, true) // 升序
+            dataViewModel.updateSort(isAscending = true) // 升序
             dismiss()
         }
     }
@@ -81,9 +83,9 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
             dataViewModel.sortOption.collect {
                 // 由於生命週期的設計，所以以下內容，只會跑一次
                 if (it.isAscending == true) {
-                    tvSortAsc.background = getSelectBack()
+                    tvSortAsc.background = requireActivity().getSelectBack()
                 } else {
-                    tvSortDesc.background = getSelectBack()
+                    tvSortDesc.background = requireActivity().getSelectBack()
                 }
                 tvSortDesc.setRippleBackground(getResourceColor(R.color.ripple))
                 tvSortAsc.setRippleBackground(getResourceColor(R.color.ripple))
@@ -92,21 +94,24 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
     }
 
     private fun updateUI(value: List<SortItem>) = binding.run {
-        rvSortOption.adapter = ViewBindingAdapter.create<ItemSortOptionBinding, SortItem>(ItemSortOptionBinding::inflate) { data, p ->
+        rvSortOption.adapter = ViewBindingAdapter.create<ItemSortOptionVertBinding, SortItem>(ItemSortOptionVertBinding::inflate) { data, p ->
             tvSortItem.text = data.sortName
             tvSortItem.background = if (data.isSelected) {
-                getSelectBack()
+                requireActivity().getSelectBack()
             } else
-                getUnSelectBack()
+                requireActivity().getUnSelectBack()
             tvSortItem.setRippleBackground(getResourceColor(R.color.ripple))
 
             root.click {
                 data.sortOption?.let {
-                    dataViewModel.updateSort(it, dataViewModel.sortOption.value.isAscending)
+                    dataViewModel.updateSort(it)
                 } ?: return@click
                 dismiss()
             }
         }.apply {
+            viewHolderInitialCallback = { it -> // 第一次產生
+                it.binding.root.resetTextSize()
+            }
             submitList(value)
         }
     }

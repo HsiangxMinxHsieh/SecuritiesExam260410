@@ -1,13 +1,22 @@
 package com.timmy.securitiesexam.ui.page
 
 import android.app.Activity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.sidesheet.SideSheetDialog
 import com.timmy.securitiesexam.R
+import com.timmy.securitiesexam.data.SortItem
 import com.timmy.securitiesexam.databinding.FragmentSideSheetBinding
+import com.timmy.securitiesexam.databinding.ItemSortOptionHoriBinding
+import com.timmy.securitiesexam.ui.util.getSelectBack
+import com.timmy.securitiesexam.ui.util.getUnSelectBack
 import com.timmy.securitiesexam.viewmodel.MainViewModel
+import com.timmymike.componenttool.ViewBindingAdapter
 import com.timmymike.viewtool.click
 import com.timmymike.viewtool.getResourceColor
+import com.timmymike.viewtool.resetLayoutTextSize
+import com.timmymike.viewtool.resetTextSize
 import com.timmymike.viewtool.setRippleBackground
+import kotlinx.coroutines.launch
 
 /**
  * @author timmy
@@ -33,9 +42,11 @@ class SortOptionSideSheet(
         setContentView(binding.root)
         initView()
         initEvent()
+        initObservable()
     }
 
     private fun initView() = binding.run {
+        root.resetLayoutTextSize()
         tvSortDesc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
         tvSortDesc.text = tvSortDesc.text.toVertical()
         tvSortAsc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
@@ -44,14 +55,59 @@ class SortOptionSideSheet(
 
     private fun initEvent() = binding.run {
         tvSortDesc.click {
-            dataViewModel.switchSequence(false)
+            dataViewModel.updateSort(isAscending = false) // 降序
             dismiss()
         }
+
         tvSortAsc.click {
-            dataViewModel.switchSequence(true)
+            dataViewModel.updateSort(isAscending = true) // 升序
             dismiss()
         }
     }
 
+    private fun initObservable() = binding.run {
+        lifecycleScope.launch {
+            // 在 Main執行序請求執行更新內容
+            updateUI(dataViewModel.getSortItems())
+
+            dataViewModel.sortOption.collect {
+                // 由於生命週期的設計，所以以下內容，只會跑一次
+                if (it.isAscending == true) {
+                    tvSortAsc.background = mActivity.getSelectBack()
+                } else {
+                    tvSortDesc.background = mActivity.getSelectBack()
+                }
+                tvSortDesc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
+                tvSortAsc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
+            }
+        }
+    }
+
+    private fun updateUI(value: List<SortItem>) = binding.run {
+        rvSortOption.adapter = ViewBindingAdapter.create<ItemSortOptionHoriBinding, SortItem>(ItemSortOptionHoriBinding::inflate) { data, p ->
+            data.sortName?.let { tvSortItem.text = it.toVertical() }
+            tvSortItem.background = if (data.isSelected) {
+                mActivity.getSelectBack()
+            } else
+                mActivity.getUnSelectBack()
+            tvSortItem.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
+
+            root.click {
+                data.sortOption?.let {
+                    dataViewModel.updateSort(it)
+                } ?: return@click
+                dismiss()
+            }
+        }.apply {
+            viewHolderInitialCallback = { it -> // 第一次產生
+                it.binding.root.resetTextSize()
+            }
+
+            submitList(value)
+        }
+    }
+
     fun CharSequence.toVertical() = this.toString().toCharArray().joinToString("\n")
+
+
 }

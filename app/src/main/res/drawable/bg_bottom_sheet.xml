@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?attr/colorSurface" />
+    <solid android:color="@color/dialog_back" />
 
     <corners
-        android:topLeftRadius="24dp"
-        android:topRightRadius="24dp" />
+        android:topLeftRadius="@dimen/dialog_round_corner"
+        android:topRightRadius="@dimen/dialog_round_corner" />
 </shape>

@@ -17,7 +17,12 @@
     <color name="background">#FFFFFFFF</color>
     <color name="icon_stroke">#dcdcdc</color>
     <color name="sort_select">#800000</color>
-
+    <color name="btn_confirm">#800000</color>
+    <color name="dialog_back">#FFFFFFFF</color>
+    <color name="dialog_text">#FF000000</color>
     <color name="button_background">#444444</color>
     <color name="downloading_background">#99000000</color>
+
+    <color name="splash_text_main">#FF018786</color>
+    <color name="splash_text_sub">#FF03DAC5</color>
 </resources>

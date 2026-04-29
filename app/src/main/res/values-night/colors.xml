@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#FF111111</color>
+    <color name="dialog_back">#FF424242</color>
+    <color name="dialog_text">#FFFFFFFF</color>
+    <color name="sort_select">#00bfff</color>
+    <color name="btn_confirm">#00bfff</color>
+    <color name="splash_text_main">#FF03DAC5</color>
+    <color name="splash_text_sub">#FFE0FFFF</color>
+</resources>
