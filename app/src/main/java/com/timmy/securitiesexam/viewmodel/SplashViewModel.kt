@@ -1,5 +1,6 @@
 package com.timmy.securitiesexam.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.timmy.assetslibs.repo.GetAPIRepository
@@ -52,7 +53,7 @@ class SplashViewModel @Inject constructor(
         private const val API_PROGRESS_WEIGHT = 0.3f // API 部分的權重
         private const val DB_PROGRESS_WEIGHT = 0.7f  // 資料寫入部分的權重
         private const val CHUNK_SIZE = 500           // 資料區間 // 此值越小會越頻繁呼叫Splash頁面更新畫面
-        private const val GET_DATA_INTERVAL = TimeUnits.oneHour * 6 // 修改螢幕畫面中
+        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 1 // 取資料的時間間隔 // 若上一次取完沒有大於這個時間，就不會再次取資料
     }
 
     // Splash的狀態。
@@ -86,12 +87,17 @@ class SplashViewModel @Inject constructor(
         }
     }
 
+    // Splash頁面的等待秒數結束
     fun onSplashTimerFinished() {
         _uiState.update { it.copy(timerFinished = true) }
     }
 
-    // 商業邏輯新增資料
+    // SplashViewModel的資料處理結束
+    private fun completeData() {
+        _uiState.update { it.copy(dataFinished = true) }
+    }
 
+    // 判斷是否需要取得資料
     private fun shouldFetchData(): Boolean {
         return dsRepo.getDataInterval + GET_DATA_INTERVAL < nowTime
     }
@@ -111,6 +117,7 @@ class SplashViewModel @Inject constructor(
             )
         }
 
+    // UnitTest
     fun String?.toSafeDouble(): Double {
         return this
             ?.replace(",", "")
@@ -119,6 +126,12 @@ class SplashViewModel @Inject constructor(
             ?.toDoubleOrNull() ?: GlobalConst.EMPTY_DATA_VALUE
     }
 
+    val context: Context by lazy { App.instance.applicationContext }
+    val colorRise: Int by lazy { context.getResourceColor(R.color.rise) }
+    val colorFall: Int by lazy { context.getResourceColor(R.color.fall) }
+    val colorRemain: Int by lazy { context.getResourceColor(R.color.remain) }
+
+    // UnitTest
     private fun mergeData(
         bbu: List<BBUDataItem>,
         avg: List<StockAVGDataItem>,
@@ -162,15 +175,8 @@ class SplashViewModel @Inject constructor(
             item.transaction = it.transaction.toSafeDouble()
         }
 
-        val context = App.instance.applicationContext
-        val colorRise = context.getResourceColor(R.color.rise)
-        val colorFall = context.getResourceColor(R.color.fall)
-        val colorRemain = context.getResourceColor(R.color.remain)
-        val colorDefault = context.getResourceColor(R.color.data_default)
-
-        // 內部方法：判斷資料大小與顏色
-        fun getColor(current: Double, target: Double): Int {
-
+        // 內部方法：判斷資料大小與顏色 // UnitTest
+        fun getPriceColor(current: Double, target: Double): Int {
             return when {
                 current > target -> colorRise
                 current < target -> colorFall
@@ -194,9 +200,9 @@ class SplashViewModel @Inject constructor(
                 dividendYield = it.dividendYield,
                 pBratio = it.pBratio,
                 pEratio = it.pEratio,
-                openingPriceColor = getColor(it.openingPrice, it.monthlyAveragePrice),
-                closingPriceColor = getColor(it.closingPrice, it.monthlyAveragePrice), // 收盤價高於月平均價請用紅字,低於請用綠字顯示
-                changeColor = getColor(it.change, 0.0) // 	漲跌價差 正的請用紅字,負的請用綠字
+                openingPriceColor = getPriceColor(it.openingPrice, it.monthlyAveragePrice),
+                closingPriceColor = getPriceColor(it.closingPrice, it.monthlyAveragePrice), // 收盤價高於月平均價請用紅字,低於請用綠字顯示
+                changeColor = getPriceColor(it.change, 0.0) // 	漲跌價差 正的請用紅字,負的請用綠字
             )
         }
     }
@@ -239,10 +245,6 @@ class SplashViewModel @Inject constructor(
                 stage = SplashStage.DBWriting
             )
         }
-    }
-
-    private fun completeData() {
-        _uiState.update { it.copy(dataFinished = true) }
     }
 
     private fun handleError(e: Throwable) {
