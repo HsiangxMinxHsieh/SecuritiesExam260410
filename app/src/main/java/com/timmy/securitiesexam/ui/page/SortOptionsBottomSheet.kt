@@ -15,7 +15,6 @@ import com.timmy.securitiesexam.databinding.FragmentBottomSheetBinding
 import com.timmy.securitiesexam.databinding.ItemSortOptionBinding
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.ViewBindingAdapter
-import com.timmymike.logtool.loge
 import com.timmymike.viewtool.click
 import com.timmymike.viewtool.getResourceColor
 import com.timmymike.viewtool.getScreenHeightPixels
@@ -86,7 +85,6 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
             root.click {
                 data.sortOption?.let {
                     dataViewModel.updateSort(it, dataViewModel.sortOption.value.isAscending)
-                    loge("即將執行=>${it}的篩選")
                 } ?: return@click
                 dismiss()
             }

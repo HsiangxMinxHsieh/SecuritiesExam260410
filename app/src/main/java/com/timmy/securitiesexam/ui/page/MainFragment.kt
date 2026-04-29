@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.timmy.base.cons.GlobalConst
 import com.timmy.roomlibs.database.tables.stock.StockEntity
+import com.timmy.roomlibs.repo.RoomRepository
 import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.databinding.FragmentMainLayoutBinding
 import com.timmy.securitiesexam.databinding.ItemStockContentBinding
@@ -22,6 +23,7 @@ import com.timmymike.componenttool.BaseFragment
 import com.timmymike.componenttool.ViewBindingAdapter
 import com.timmymike.logtool.forLoge
 import com.timmymike.logtool.format
+import com.timmymike.timetool.TimeUnits
 import com.timmymike.viewtool.clickWithTrigger
 import com.timmymike.viewtool.getScreenWidthPixels
 import com.timmymike.viewtool.pxToDp
@@ -68,6 +70,9 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
                 if (data.isEmpty()) return@collect
                 @Suppress("UNCHECKED_CAST")
                 (binding.rvStockContent.adapter as ViewBindingAdapter<*, StockEntity>).submitList(data)
+                if (data.size == RoomRepository.LIMIT) { // 代表是重新排序的內容
+                    binding.rvStockContent.postDelayed({ binding.rvStockContent.scrollToPosition(0) }, TimeUnits.oneSec / 8)
+                }
             }
         }
     }

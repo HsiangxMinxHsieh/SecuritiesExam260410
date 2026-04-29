@@ -37,10 +37,6 @@ class RoomRepository @Inject constructor(
 
     suspend fun getCount() = stockDao.getCount()
 
-    suspend fun getDataDesc(offset: Int) = stockDao.getStockDataDesc(LIMIT, offset = offset)
-
-    suspend fun getDataAsc(offset: Int) = stockDao.getStockDataAsc(LIMIT, offset = offset)
-
     suspend fun upsertAll(list: List<StockEntity>) {
         stockDao.upsertAll(list)
     }
