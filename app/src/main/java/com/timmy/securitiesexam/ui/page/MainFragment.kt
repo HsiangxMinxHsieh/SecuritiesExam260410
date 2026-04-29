@@ -71,7 +71,11 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
                 @Suppress("UNCHECKED_CAST")
                 (binding.rvStockContent.adapter as ViewBindingAdapter<*, StockEntity>).submitList(data)
                 if (data.size == RoomRepository.LIMIT) { // 代表是重新排序的內容
-                    binding.rvStockContent.postDelayed({ binding.rvStockContent.scrollToPosition(0) }, TimeUnits.oneSec / 8)
+                    binding.rvStockContent.postDelayed({
+                        binding.rvStockContent.scrollToPosition(0)
+                        binding.rvStockContent.adapter?.notifyItemChanged(0, RoomRepository.LIMIT) // 避免重新排序、篩選後的第一個高度跑掉
+                    }, TimeUnits.oneSec / 6)
+
                 }
             }
         }
