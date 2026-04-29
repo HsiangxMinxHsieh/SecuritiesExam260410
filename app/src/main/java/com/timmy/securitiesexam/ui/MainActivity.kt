@@ -56,7 +56,7 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
         setToolbarVisible(false)
         pageViewModel.viewModelSwitchFragment(MainFragment())
         ivMenu.apply {
-            setMarginByDpUnit(0, 33, 8, 0) // 時間不夠詳細研究，寫死
+            setMarginByDpUnit(0, 33, 8, 0)
             background = (getRoundBgById(5, R.color.theme_light, R.color.icon_stroke, 1))
             setRippleBackground(getResourceColor(R.color.icon_stroke))
         }

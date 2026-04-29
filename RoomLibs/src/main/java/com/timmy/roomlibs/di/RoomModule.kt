@@ -34,7 +34,6 @@ object RoomModule {
             .databaseBuilder(application, AppDataBase::class.java, "SecuritiesExam.db")
 //            .addMigrations(*UpdateExt.availableMigration) // 容許已上線的資料庫的更新 // 注意，若資料表有新增欄位，必須要可以為null。
             .fallbackToDestructiveMigration() // 破壞性遷移：變更 DB 版本時會清空並重建；若改用手動 addMigrations 可移除此行
-            .allowMainThreadQueries()
             .build()
     }
 

@@ -84,7 +84,7 @@ class MainFragment : BaseFragment<FragmentMainLayoutBinding>() {
             tvName.text = data.name
 
             tvOpeningPrice.text = data.openingPrice.emptyToDash()
-            tvOpeningPrice.setTextColor(data.openingPriceColor) // 題目沒有說要做，但我多做的 // 希望不要被扣分
+            tvOpeningPrice.setTextColor(data.openingPriceColor)
 
             tvClosingPrice.text = data.closingPrice.emptyToDash()
             tvClosingPrice.setTextColor(data.closingPriceColor)
