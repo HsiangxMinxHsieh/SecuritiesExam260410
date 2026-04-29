@@ -90,6 +90,7 @@ class SortOptionSideSheet(
                 mActivity.getSelectBack()
             } else
                 mActivity.getUnSelectBack()
+
             tvSortItem.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
 
             root.click {
