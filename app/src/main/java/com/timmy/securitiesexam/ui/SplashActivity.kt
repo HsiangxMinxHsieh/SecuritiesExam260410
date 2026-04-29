@@ -43,8 +43,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     private val viewModel: SplashViewModel by viewModels()
 
+    // 等待 SPLASH_MIN_DURATION 跳頁的Job
     private var splashJob: Job? = null
 
+    // 避免多個Dialog重複出現的變數
     private var dialog: Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

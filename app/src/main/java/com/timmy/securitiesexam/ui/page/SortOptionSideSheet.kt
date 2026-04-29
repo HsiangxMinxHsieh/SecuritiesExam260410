@@ -3,19 +3,17 @@ package com.timmy.securitiesexam.ui.page
 import android.app.Activity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.sidesheet.SideSheetDialog
-import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.data.SortItem
 import com.timmy.securitiesexam.databinding.FragmentSideSheetBinding
 import com.timmy.securitiesexam.databinding.ItemSortOptionHoriBinding
 import com.timmy.securitiesexam.ui.util.getSelectBack
 import com.timmy.securitiesexam.ui.util.getUnSelectBack
+import com.timmy.securitiesexam.ui.util.setRipple
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.ViewBindingAdapter
 import com.timmymike.viewtool.click
-import com.timmymike.viewtool.getResourceColor
 import com.timmymike.viewtool.resetLayoutTextSize
 import com.timmymike.viewtool.resetTextSize
-import com.timmymike.viewtool.setRippleBackground
 import kotlinx.coroutines.launch
 
 /**
@@ -47,9 +45,9 @@ class SortOptionSideSheet(
 
     private fun initView() = binding.run {
         root.resetLayoutTextSize()
-        tvSortDesc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
+        tvSortDesc.setRipple()
         tvSortDesc.text = tvSortDesc.text.toVertical()
-        tvSortAsc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
+        tvSortAsc.setRipple()
         tvSortAsc.text = tvSortAsc.text.toVertical()
     }
 
@@ -77,8 +75,8 @@ class SortOptionSideSheet(
                 } else {
                     tvSortDesc.background = mActivity.getSelectBack()
                 }
-                tvSortDesc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
-                tvSortAsc.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
+                tvSortDesc.setRipple()
+                tvSortAsc.setRipple()
             }
         }
     }
@@ -91,7 +89,7 @@ class SortOptionSideSheet(
             } else
                 mActivity.getUnSelectBack()
 
-            tvSortItem.setRippleBackground(mActivity.getResourceColor(R.color.ripple))
+            tvSortItem.setRipple()
 
             root.click {
                 data.sortOption?.let {

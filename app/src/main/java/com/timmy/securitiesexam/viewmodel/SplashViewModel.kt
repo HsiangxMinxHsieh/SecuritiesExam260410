@@ -49,9 +49,9 @@ class SplashViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        private const val API_PROGRESS_WEIGHT = 0.3f
-        private const val DB_PROGRESS_WEIGHT = 0.7f
-        private const val CHUNK_SIZE = 500
+        private const val API_PROGRESS_WEIGHT = 0.3f // API 部分的權重
+        private const val DB_PROGRESS_WEIGHT = 0.7f  // 資料寫入部分的權重
+        private const val CHUNK_SIZE = 500           // 資料區間 // 此值越小會越頻繁呼叫Splash頁面更新畫面
         private const val GET_DATA_INTERVAL = TimeUnits.oneHour * 6 // 修改螢幕畫面中
     }
 
@@ -59,10 +59,11 @@ class SplashViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SplashUiState())
     val uiState = _uiState.asStateFlow()
 
-    private var splashJob: Job? = null
+    // 避免螢幕轉向時重複啟動的Job
+    private var getDataJob: Job? = null
 
     fun start() {
-        if (splashJob?.isActive == true) { // 螢幕轉向時，不重複啟動
+        if (getDataJob?.isActive == true) { // 螢幕轉向時，不重複啟動
             return
         }
 
@@ -71,7 +72,7 @@ class SplashViewModel @Inject constructor(
             return
         }
 
-        splashJob = viewModelScope.launch {
+        getDataJob = viewModelScope.launch {
             runCatching {
                 val apiData = fetchAllApiData()
                 insertAllData(apiData)

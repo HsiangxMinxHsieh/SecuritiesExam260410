@@ -15,21 +15,20 @@ import com.timmy.securitiesexam.databinding.FragmentBottomSheetBinding
 import com.timmy.securitiesexam.databinding.ItemSortOptionVertBinding
 import com.timmy.securitiesexam.ui.util.getSelectBack
 import com.timmy.securitiesexam.ui.util.getUnSelectBack
+import com.timmy.securitiesexam.ui.util.setRipple
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.ViewBindingAdapter
 import com.timmymike.viewtool.click
-import com.timmymike.viewtool.getResourceColor
 import com.timmymike.viewtool.getScreenHeightPixels
 import com.timmymike.viewtool.resetLayoutTextSize
 import com.timmymike.viewtool.resetTextSize
-import com.timmymike.viewtool.setRippleBackground
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 /**
  * @author timmy
  *
- * [SortOptionBottomSheet] 針對窄螢幕 (直向模式) 優化的排序選擇器。
+ * [SortOptionsBottomSheet] 針對窄螢幕 (直向模式) 優化的排序選擇器。
  *
  * 主要功能：
  * 1. 互動體驗：實作符合 Material Design 3 規範的底部滑出式選單，便於單手操作。
@@ -39,9 +38,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
 
-    private lateinit var _binding: FragmentBottomSheetBinding
+    private var _binding: FragmentBottomSheetBinding? = null
 
-    private val binding get() = _binding
+    private val binding get() = _binding!!
 
     private val dataViewModel: MainViewModel by activityViewModels()
 
@@ -88,8 +87,8 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
                 } else {
                     tvSortDesc.background = requireActivity().getSelectBack()
                 }
-                tvSortDesc.setRippleBackground(getResourceColor(R.color.ripple))
-                tvSortAsc.setRippleBackground(getResourceColor(R.color.ripple))
+                tvSortDesc.setRipple()
+                tvSortAsc.setRipple()
             }
         }
     }
@@ -101,7 +100,8 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
                 requireActivity().getSelectBack()
             } else
                 requireActivity().getUnSelectBack()
-            tvSortItem.setRippleBackground(getResourceColor(R.color.ripple))
+
+            tvSortItem.setRipple()
 
             root.click {
                 data.sortOption?.let {
@@ -144,4 +144,9 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
 
     // 背景透明的主題
     override fun getTheme(): Int = R.style.CustomBottomSheetDialogTheme
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

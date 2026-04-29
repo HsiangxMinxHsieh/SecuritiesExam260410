@@ -37,7 +37,7 @@ class MainActivity : BaseToolBarActivity<ActivityMainBinding>() {
     private val pageViewModel: PageViewModel by viewModels()
     private val dataViewModel: MainViewModel by viewModels()
 
-    // 持有引用以便管理 // 要可為null // 若用lateinit的話，會在onPause時一樣要判斷是否有指定過值
+    // 持有引用以便管理 // 要可為null // 最後要指定為null，以避免Memory Leak。
     private var activeSortMenu: Dialog? = null
     private var activeBottomSheet: SortOptionsBottomSheet? = null
 
