@@ -3,7 +3,7 @@
 這是一個基於 Android 現代化架構開發的股票資訊展示應用，透過串接 **臺灣證券交易所 OpenAPI** 獲取即時資料。本專案不僅達成面試規格要求，更針對金融數據的呈現精度與使用者流暢體驗進行了深度優化。
 
 ## 📺 專案演示 (Demo)
-*   **YouTube 影片連結：** [點擊觀看 App 操作演示](https://youtu.be/UqLKz2Pj-No)
+*   **YouTube 影片連結：** [點擊觀看 App 操作演示](https://youtu.be/XQyDyF58mLc)
 *   **核心展示內容：** 
     *   數據非同步加載與無限捲動 (Infinite Scrolling)。
     *   精確的數值對齊與金融色彩邏輯 (紅漲綠跌)。
