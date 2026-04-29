@@ -53,7 +53,7 @@ class SplashViewModel @Inject constructor(
         private const val API_PROGRESS_WEIGHT = 0.3f // API 部分的權重
         private const val DB_PROGRESS_WEIGHT = 0.7f  // 資料寫入部分的權重
         private const val CHUNK_SIZE = 500           // 資料區間 // 此值越小會越頻繁呼叫Splash頁面更新畫面
-        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 1 // 取資料的時間間隔 // 若上一次取完沒有大於這個時間，就不會再次取資料
+        private const val GET_DATA_INTERVAL = TimeUnits.oneMin * 10 // 取資料的時間間隔 // 若上一次取完沒有大於這個時間，就不會再次取資料
     }
 
     // Splash的狀態。
