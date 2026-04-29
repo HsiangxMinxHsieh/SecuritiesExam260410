@@ -13,6 +13,8 @@ import com.timmy.securitiesexam.R
 import com.timmy.securitiesexam.data.SortItem
 import com.timmy.securitiesexam.databinding.FragmentBottomSheetBinding
 import com.timmy.securitiesexam.databinding.ItemSortOptionBinding
+import com.timmy.securitiesexam.ui.util.getSelectBack
+import com.timmy.securitiesexam.ui.util.getUnSelectBack
 import com.timmy.securitiesexam.viewmodel.MainViewModel
 import com.timmymike.componenttool.ViewBindingAdapter
 import com.timmymike.viewtool.click
@@ -51,13 +53,12 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
 
         initEvent()
 
-        loadDataToShow()
+        initObservable()
     }
 
 
     private fun initView() = binding.run {
-        tvSortDesc.setRippleBackground(getResourceColor(R.color.ripple))
-        tvSortAsc.setRippleBackground(getResourceColor(R.color.ripple))
+
     }
 
     private fun initEvent() = binding.run {
@@ -72,16 +73,33 @@ class SortOptionsBottomSheet() : BottomSheetDialogFragment() {
         }
     }
 
-    private fun loadDataToShow() = binding.run {
+    private fun initObservable() = binding.run {
         lifecycleScope.launch {
-            // 在 Main執行序更新內容
+            // 在 Main執行序請求執行更新內容
             updateUI(dataViewModel.getSortItems())
+
+            dataViewModel.sortOption.collect {
+                // 由於生命週期的設計，所以以下內容，只會跑一次
+                if (it.isAscending == true) {
+                    tvSortAsc.background = getSelectBack()
+                } else {
+                    tvSortDesc.background = getSelectBack()
+                }
+                tvSortDesc.setRippleBackground(getResourceColor(R.color.ripple))
+                tvSortAsc.setRippleBackground(getResourceColor(R.color.ripple))
+            }
         }
     }
 
     private fun updateUI(value: List<SortItem>) = binding.run {
         rvSortOption.adapter = ViewBindingAdapter.create<ItemSortOptionBinding, SortItem>(ItemSortOptionBinding::inflate) { data, p ->
-            tvSortTitle.text = data.sortName
+            tvSortItem.text = data.sortName
+            tvSortItem.background = if (data.isSelected) {
+                getSelectBack()
+            } else
+                getUnSelectBack()
+            tvSortItem.setRippleBackground(getResourceColor(R.color.ripple))
+
             root.click {
                 data.sortOption?.let {
                     dataViewModel.updateSort(it, dataViewModel.sortOption.value.isAscending)

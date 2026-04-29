@@ -95,7 +95,9 @@ class MainViewModel @Inject constructor(
 
     //  getAssetsContent 會切換到 IO 執行緒由方法內部處理
     suspend fun getSortItems(): List<SortItem> {
-        return asRepo.getAssetsContent("sortOption.json").toDataBeanList<SortItem>() ?: emptyList()
+        return asRepo.getAssetsContent("sortOption.json").toDataBeanList<SortItem>()?.map { item ->
+            item.copy(isSelected = item.sortOption == sortOption.value.column)
+        } ?: emptyList()
     }
 
 }

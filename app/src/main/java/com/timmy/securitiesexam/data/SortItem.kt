@@ -6,6 +6,8 @@ data class SortItem(
     @SerializedName("sortName")
     var sortName: String? = "",
     @SerializedName("sortOption")
-    var sortOption: String? = ""
+    var sortOption: String? = "",
+
+    var isSelected: Boolean = false // 記錄選中狀態
 )
 
